@@ -43,14 +43,32 @@ class Edge:
         return (math.atan2(start[1] - end[1], end[0] - start[0])) + math.pi/2
 
     def draw(self, screen, lcolor, tricolor, trirad = 10, thickness=5):
-        theta = (90 - self.rotation /self.rad)
-        newX = -math.cos(theta) * 30
-        newY = -math.sin(theta) * 30
+        theta = math.atan2(self.start[1] - self.end[1], self.end[0] - self.start[0])
+        print(f"theta {theta}")
+        m = 38
+        newX = math.cos(theta) * m
+        newY = math.sin(theta) * m
+        if (self.start[0] <= self.end[0] and self.start[1] >= self.end[1]):
+             newX = 1 * newX
+             newY = -1 * newY
+        if (self.start[0] > self.end[0] and self.start[1] >= self.end[1]):
+             newX = 1 * newX
+             newY = -1 * newY
+        if (self.start[0] <= self.end[0] and self.start[1] <= self.end[1]):
+             newX = 1 * newX
+             newY = -1 * newY
+        if (self.start[0] > self.end[0] and self.start[1] <= self.end[1]):
+             newX = 1 * newX
+             newY = -1 * newY
 
+
+        print(math.sqrt(newX **2 + newY **2))
+        print(newX)
+        print(newY)
         pygame.draw.line(screen, lcolor, self.start, self.end, thickness)
-        pygame.draw.polygon(screen, tricolor, ((self.end[0] - 30 + trirad * math.sin(self.rotation),
-                                        self.end[1] - 30 + trirad * math.cos(self.rotation)),
-                                       (self.end[0] - 30 + trirad * math.sin(self.rotation - 120*self.rad),
-                                        self.end[1] - 30 + trirad * math.cos(self.rotation - 120*self.rad)),
-                                       (self.end[0] - 30 + trirad * math.sin(self.rotation + 120*self.rad),
-                                        self.end[1] - 30 + trirad * math.cos(self.rotation + 120*self.rad))))
+        pygame.draw.polygon(screen, tricolor, ((self.end[0] - newX + trirad * math.sin(self.rotation),
+                                        self.end[1] - newY + trirad * math.cos(self.rotation)),
+                                       (self.end[0] - newX + trirad * math.sin(self.rotation - 120*self.rad),
+                                        self.end[1] - newY + trirad * math.cos(self.rotation - 120*self.rad)),
+                                       (self.end[0] - newX + trirad * math.sin(self.rotation + 120*self.rad),
+                                        self.end[1] - newY + trirad * math.cos(self.rotation + 120*self.rad))))
