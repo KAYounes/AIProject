@@ -3,50 +3,56 @@ from pygame import Vector2
 
 clock = pygame.time.Clock()
 class TextBox:
-    def __init__(self, x, y, width = 30, hight = 30):
+    def __init__(self, x, y):
         self.center = Vector2(x, y)
         self.text = '1'
-        self.width = width
-        self.hight = hight
+        self.width = 45
+        self.hight = 28
+        self.color = (255, 255, 255)
 
-        self.rect = pygame.Rect(self.center.x, self.center.y, width, hight)
+        self.rect = pygame.Rect(self.center.x, self.center.y, self.width, self.hight)
         self.rect.center = self.center
         self.font = pygame.font.Font(None, 30)
         
 
     def takeInput(self, screen, g):
+        self.color = (206, 219, 221)
         loop = True
         while(loop):
             
-            screen.fill( (255, 255, 255))
-
             for event in pygame.event.get():
+
                 if (event.type == pygame.QUIT):
                     loop = False
-                # print(event)
+                if(event.type == pygame.MOUSEBUTTONDOWN):
+                    if not(self.rect.collidepoint(pygame.mouse.get_pos())):
+                        self.color = (255, 255, 255)
+                        return int(self.text)
                 if (event.type == pygame.KEYDOWN):
-                    # print("KEYFDOWN")
+
                     if(event.key == pygame.K_RETURN):
-                        # print("ENTER")
+                        self.color = (255, 255, 255)
+                        return int(self.text)
                         loop = False
+
                     elif(event.key == pygame.K_BACKSPACE):
                         self.text = self.text[:-1]
+
                     elif(event.key >= pygame.K_0 and event.key <= pygame.K_9 and len(self.text) < 3):
+
                         if (len(self.text) == 0 and event.key == pygame.K_0):
                             continue
                         self.text += event.unicode
 
             self.render(screen)
-            g.draw_nodes()
-            # print(self.text)
             clock.tick(50)
             pygame.display.update()
 
     def render(self, screen):
-        font_surface = self.font.render(self.text, True, (0, 0, 255))
+        font_surface = self.font.render(self.text, True, (0, 0, 0))
         font_rect = font_surface.get_rect()
         font_rect.left = self.rect.left + 5
         font_rect.centery = self.rect.centery
-        pygame.draw.rect(screen, (255,0,0), self.rect)
-        self.rect.width = max(font_surface.get_width() + 10, self.width)
+        pygame.draw.rect(screen, self.color, self.rect) #206, 219, 221
+        pygame.draw.rect(screen, (0,0,0), self.rect, 3)
         screen.blit(font_surface, font_rect)

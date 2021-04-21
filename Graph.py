@@ -83,11 +83,22 @@ class Graph:
             elif (node.insideNode(point, self.padding)):
                 pygame.draw.circle(self.screen, (0,255,0), node.center, self.radius)
             else:
-                pygame.draw.circle(self.screen, (255,255,255), node.center, self.radius)
+                pygame.draw.circle(self.screen, node.color,  node.center, self.radius)
             pygame.draw.circle(self.screen, (0,0,0), node.center, self.radius, 3)
 
     def draw_edges(self):
         for edge in self.edges:
-            edge.draw(self.screen, (0,0,0), (0,255,0))
-            # edge.tb = 
+            # edge.draw(self.screen, (0,0,0), (0,255,0))
             pygame.draw.line(self.screen, edge.color, edge.startingPoint, edge.endingPoint, 3)
+            edge.tb.render(self.screen)
+
+    def addWeight(self, point):
+        for edge in self.edges:
+            if (edge.tb.rect.collidepoint(point)):
+                edge.weight = edge.tb.takeInput(self.screen, self)
+                return True
+
+    def printGraph(self):
+        self.nodes[0].color = (255,0,0)
+        self.nodes[0].adjNode()
+        self.nodes[0].adjEdge()

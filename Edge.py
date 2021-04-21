@@ -13,7 +13,7 @@ class Edge:
 
         self.startingPoint = startNode.center
         self.endingPoint = endNode.center
-        self.tb = TextBox(self.startingPoint.x - self.endingPoint.x, self.startingPoint.y - self.endingPoint.y)
+        self.tb = TextBox((self.startingPoint.x + self.endingPoint.x) // 2, (self.startingPoint.y + self.endingPoint.y) // 2)
 
         self.start = self.startingPoint
         self.end = self.endingPoint

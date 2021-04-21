@@ -22,7 +22,16 @@ class Node:
 
     def addAdjNode(self, node, edge):
         self.adjacent.append([node, edge])
-        
+    
+    def adjNode(self):
+        for node in self.adjacent:
+            node[0].color = (255, 0 , 255)
+
+    def adjEdge(self):
+        for node in self.adjacent:  
+            node[1].color = (0, 255 , 255)
+            print(node[1].weight)
+
 
     
     

@@ -43,13 +43,15 @@ while(loop):
 
         if(event.type == pygame.MOUSEBUTTONDOWN):
             if(event.button == 1):
-                if (tb.rect.collidepoint(pygame.mouse.get_pos())):
-                    tb.takeInput(screen, g)
+                if (g.addWeight(mouse)):
+                    pass
                 else:
                     g.addNode(mouse)
                     g.addEdge(mouse)
             elif (event.button == 3):
                 g.removeNode(mouse)
+            else:
+                g.printGraph()
         
         
 
