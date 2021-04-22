@@ -30,7 +30,6 @@ class Node:
     def adjEdge(self):
         for node in self.adjacent:  
             node[1].color = (0, 255 , 255)
-            print(node[1].weight)
 
 
     
