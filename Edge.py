@@ -1,7 +1,7 @@
 import pygame
-from pygame import Vector2
 from TextBox import TextBox
 import math
+
 class Edge:
     def __init__(self, startNode, endNode, weight = 1, color = (0, 0, 0), width = 15):
         self.startNode = startNode
@@ -33,8 +33,9 @@ class Edge:
         )
 
 
-
-    # def addWeight(self):
+    def takeWeight(self, screen, point):
+        if (self.tb.rect.collidepoint(point)):
+            self.weight = self.tb.takeInput(screen, self)
 
     def arrow(self):
         start = self.startingPoint
@@ -45,21 +46,10 @@ class Edge:
     def draw(self, screen, lcolor, tricolor, trirad = 13, thickness=6):
         theta = math.atan2(self.start[1] - self.end[1], self.end[0] - self.start[0])
         
-        m = 38
+        m = 25 + 9
         newX = math.cos(theta) * m
-        newY = math.sin(theta) * m
-        if (self.start[0] <= self.end[0] and self.start[1] >= self.end[1]):
-             newX = 1 * newX
-             newY = -1 * newY
-        if (self.start[0] > self.end[0] and self.start[1] >= self.end[1]):
-             newX = 1 * newX
-             newY = -1 * newY
-        if (self.start[0] <= self.end[0] and self.start[1] <= self.end[1]):
-             newX = 1 * newX
-             newY = -1 * newY
-        if (self.start[0] > self.end[0] and self.start[1] <= self.end[1]):
-             newX = 1 * newX
-             newY = -1 * newY
+        newY = -math.sin(theta) * m
+
 
         pygame.draw.line(screen, lcolor, self.start, self.end, thickness)
         pygame.draw.polygon(screen, tricolor, ((self.end[0] - newX + trirad * math.sin(self.rotation),
@@ -68,3 +58,5 @@ class Edge:
                                         self.end[1] - newY + trirad * math.cos(self.rotation - 120*self.rad)),
                                        (self.end[0] - newX + trirad * math.sin(self.rotation + 120*self.rad),
                                         self.end[1] - newY + trirad * math.cos(self.rotation + 120*self.rad))))
+
+                                    

@@ -16,7 +16,7 @@ class TextBox:
         
 
     def takeInput(self, screen, g):
-        self.color = (206, 219, 221)
+        self.color = (162, 237, 50)
         loop = True
         while(loop):
             
