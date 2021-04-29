@@ -216,8 +216,8 @@ class Graph:
         print(">>", cost)
         return True
 
+        # ____Uniform Cost Search implementation with priority queue____
 
-    # ____Uniform Cost Search implementation with priority queue____
     def UCS(self):
 
         # Path cost is calculated
@@ -230,7 +230,7 @@ class Graph:
         root = self.nodes[0]
         counter = 0
         fringe = PriorityQueue()
-        fringe.put((0, counter,root)) #the counter is used to differentiate between elements with the same weight
+        fringe.put((0, counter, root))  # the counter is used to differentiate between elements with the same weight
         visited = []
         goal = self.nodes[-1]
         running = True
@@ -240,11 +240,11 @@ class Graph:
                 if event.type == speed:
                     item_out = fringe.get()
                     current = item_out[2]
-                    current_priority= item_out[0]
+                    current_priority = item_out[0]
                     path_cost = current_priority
                     visited.append(current)
-                    # if (current.parent is not None):
-                    #     current.getEdgeFromParent().color = (255, 0, 0)
+                    if (current.parent is not None):
+                        current.getEdgeFromParent().color = (255, 0, 0)
                     current.defaultColor = (255, 0, 0)
                     if current == goal:
                         print("> Goal")
@@ -255,7 +255,7 @@ class Graph:
                     for adj in current.adjacent:
                         if adj[0] not in visited:
                             adj[0].defaultColor = (150, 150, 150)
-                            #adj[0].parent = current
+                            adj[0].parent = current
                             counter += 1
                             fringe.put((path_cost + adj[1].weight, counter, adj[0]))
                             print(f">>Weight: {path_cost + adj[1].weight}")
@@ -267,14 +267,10 @@ class Graph:
                     self.screen.blit(self.surface, (0, 0))
                     pygame.display.update()
 
-        # while (goal.parent is not None):
-        #     print(goal.getEdgeFromParent())
-        #     cost += goal.getEdgeFromParent().weight
-        #     goal = goal.parent
-        #
-        # print(">>", cost)
+        while (goal.parent is not None):
+            print(goal.getEdgeFromParent())
+            goal = goal.parent
         return True
-
 
     def runAlgorithm(self, algorithm, btn, panel):
         loop = True
