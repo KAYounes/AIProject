@@ -1,7 +1,7 @@
 import pygame
 from Node import Node
 from Edge import Edge
-
+from queue import PriorityQueue
 class Graph:
     def __init__(self, surface, screen, radius, directed = False):
         self.screen = screen
@@ -164,7 +164,7 @@ class Graph:
             #$ Calling BFS with 1 node returns the last calculated cost
 
         speed = pygame.USEREVENT + 1
-        pygame.time.set_timer(speed, 10)
+        pygame.time.set_timer(speed, 1000)
         
         speed2 = pygame.USEREVENT + 2
         pygame.time.set_timer(speed2, 750)
@@ -213,6 +213,120 @@ class Graph:
             cost += goal.getEdgeFromParent().weight
             goal = goal.parent
             
+        print(">>", cost)
+        return True
+
+        # ____Uniform Cost Search implementation with priority queue____
+
+    def UCS(self):
+
+        # Path cost is calculated
+        speed = pygame.USEREVENT + 1
+        pygame.time.set_timer(speed, 1000)
+
+        speed2 = pygame.USEREVENT + 2
+        pygame.time.set_timer(speed2, 750)
+
+        root = self.nodes[0]
+        counter = 0
+        fringe = PriorityQueue()
+        fringe.put((0, counter, root))  # the counter is used to differentiate between elements with the same weight
+        visited = []
+        goal = self.nodes[-1]
+        running = True
+        path_cost = 0
+        while running and not fringe.empty():
+            for event in pygame.event.get():
+                if event.type == speed:
+                    item_out = fringe.get()
+                    current = item_out[2]
+                    current_priority = item_out[0]
+                    path_cost = current_priority
+                    visited.append(current)
+                    if (current.parent is not None):
+                        current.getEdgeFromParent().color = (255, 0, 0)
+                    current.defaultColor = (255, 0, 0)
+                    if current == goal:
+                        print("> Goal")
+                        print(f"PathCost: {path_cost}")
+                        current.defaultColor = (0, 255, 255)
+                        running = False
+                        break
+                    for adj in current.adjacent:
+                        if adj[0] not in visited:
+                            adj[0].defaultColor = (150, 150, 150)
+                            adj[0].parent = current
+                            counter += 1
+                            fringe.put((path_cost + adj[1].weight, counter, adj[0]))
+                            print(f">>Weight: {path_cost + adj[1].weight}")
+
+                        else:
+                            adj[0].defaultColor = (150, 255, 150)
+
+                    self.draw_nodes((0, 0))
+                    self.screen.blit(self.surface, (0, 0))
+                    pygame.display.update()
+
+        while (goal.parent is not None):
+            print(goal.getEdgeFromParent())
+            goal = goal.parent
+        return True
+
+
+    def DFS(self):
+
+        # > Potential Bug
+        # $ Calling BFS with 1 node returns the last calculated cost
+
+        speed = pygame.USEREVENT + 1
+        pygame.time.set_timer(speed, 1000)
+
+        speed2 = pygame.USEREVENT + 2
+        pygame.time.set_timer(speed2, 750)
+
+        root = self.nodes[0]
+        fringe = []
+        fringe.append(root)
+        visited = []
+        goal = self.nodes[-1]
+        cost = 0
+        current = None
+        running = True
+        while running and (len(fringe) > 0):
+            for event in pygame.event.get():
+                if event.type == speed:
+
+                    current = fringe.pop()
+                    if (current.parent is not None):
+                        current.getEdgeFromParent().color = (255, 0, 0)
+                    visited.append(current)
+
+                    current.defaultColor = (255, 0, 0)
+                    if current == goal:
+                        print("> Goal")
+                        current.defaultColor = (0, 255, 255)
+                        running = False
+                        break
+
+                    for adj in current.adjacent:
+                        if adj[0] not in visited:
+                            adj[0].defaultColor = (150, 150, 150)
+                            if (adj[0] not in fringe):
+                                adj[0].parent = current
+                            fringe.append(adj[0])
+
+                        else:
+                            adj[0].defaultColor = (150, 255, 150)
+
+                    self.draw_nodes((0, 0))
+                    self.screen.blit(self.surface, (0, 0))
+                    pygame.display.update()
+
+        while (goal.parent is not None):
+            print(goal.getEdgeFromParent())
+            cost += goal.getEdgeFromParent().weight
+            goal = goal.parent
+
         print(">>", cost)
         return True
 

@@ -144,7 +144,11 @@ while(loop):
         #$ QUIT event
         if (event.type == QUIT):
             loop = False
-
+        if (event.type == pygame.KEYDOWN):
+            if(event.key == pygame.K_u):
+                g.UCS()
+            if (event.key == pygame.K_d):
+                g.DFS()
         if(canvas.get_rect().collidepoint(mouse)):
             if(event.type == pygame.MOUSEBUTTONDOWN):
 
@@ -155,8 +159,8 @@ while(loop):
                 elif (event.button == 3):
                     g.removeNode(mouse)
                 else:
-                    # g.BFS()
-                    g.printGraph()
+                    g.BFS()
+                    #g.printGraph()
                     # g.runAlgorithm(0, play_btn, panel)
 
         elif (panel.mouseOnPanel(mouse)):
