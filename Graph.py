@@ -272,6 +272,64 @@ class Graph:
             goal = goal.parent
         return True
 
+
+    def DFS(self):
+
+        # > Potential Bug
+        # $ Calling BFS with 1 node returns the last calculated cost
+
+        speed = pygame.USEREVENT + 1
+        pygame.time.set_timer(speed, 1000)
+
+        speed2 = pygame.USEREVENT + 2
+        pygame.time.set_timer(speed2, 750)
+
+        root = self.nodes[0]
+        fringe = []
+        fringe.append(root)
+        visited = []
+        goal = self.nodes[-1]
+        cost = 0
+        current = None
+        running = True
+        while running and (len(fringe) > 0):
+            for event in pygame.event.get():
+                if event.type == speed:
+
+                    current = fringe.pop()
+                    if (current.parent is not None):
+                        current.getEdgeFromParent().color = (255, 0, 0)
+                    visited.append(current)
+
+                    current.defaultColor = (255, 0, 0)
+                    if current == goal:
+                        print("> Goal")
+                        current.defaultColor = (0, 255, 255)
+                        running = False
+                        break
+
+                    for adj in current.adjacent:
+                        if adj[0] not in visited:
+                            adj[0].defaultColor = (150, 150, 150)
+                            if (adj[0] not in fringe):
+                                adj[0].parent = current
+                            fringe.append(adj[0])
+
+                        else:
+                            adj[0].defaultColor = (150, 255, 150)
+
+                    self.draw_nodes((0, 0))
+                    self.screen.blit(self.surface, (0, 0))
+                    pygame.display.update()
+
+        while (goal.parent is not None):
+            print(goal.getEdgeFromParent())
+            cost += goal.getEdgeFromParent().weight
+            goal = goal.parent
+
+        print(">>", cost)
+        return True
+
     def runAlgorithm(self, algorithm, btn, panel):
         loop = True
         while(loop):

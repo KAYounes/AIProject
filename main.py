@@ -147,6 +147,8 @@ while(loop):
         if (event.type == pygame.KEYDOWN):
             if(event.key == pygame.K_u):
                 g.UCS()
+            if (event.key == pygame.K_d):
+                g.DFS()
         if(canvas.get_rect().collidepoint(mouse)):
             if(event.type == pygame.MOUSEBUTTONDOWN):
 
