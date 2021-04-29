@@ -3,13 +3,13 @@ from TextBox import TextBox
 import math
 
 class Edge:
-    def __init__(self, startNode, endNode, weight = 1, color = (0, 0, 0), width = 15):
+    def __init__(self, startNode, endNode, directed = False, weight = 1, color = (0, 0, 0), width = 15):
         self.startNode = startNode
         self.endNode = endNode
-        self.weight = weight
-        self.color = color
+        self.weight = 1
+        self.color = (0, 0, 0)
         self.width = width
-        self.direction = 0 #> 0: no direction, 1: from start to end
+        self.directed = directed
 
         self.startingPoint = startNode.center
         self.endingPoint = endNode.center
@@ -33,10 +33,6 @@ class Edge:
         )
 
 
-    def takeWeight(self, screen, point):
-        if (self.tb.rect.collidepoint(point)):
-            self.weight = self.tb.takeInput(screen, self)
-
     def arrow(self):
         start = self.startingPoint
         end = self.endingPoint
@@ -44,19 +40,21 @@ class Edge:
         return (math.atan2(start[1] - end[1], end[0] - start[0])) + math.pi/2
 
     def draw(self, screen, lcolor, tricolor, trirad = 13, thickness=6):
-        theta = math.atan2(self.start[1] - self.end[1], self.end[0] - self.start[0])
-        
-        m = 25 + 9
-        newX = math.cos(theta) * m
-        newY = -math.sin(theta) * m
-
-
         pygame.draw.line(screen, lcolor, self.start, self.end, thickness)
-        pygame.draw.polygon(screen, tricolor, ((self.end[0] - newX + trirad * math.sin(self.rotation),
-                                        self.end[1] - newY + trirad * math.cos(self.rotation)),
-                                       (self.end[0] - newX + trirad * math.sin(self.rotation - 120*self.rad),
-                                        self.end[1] - newY + trirad * math.cos(self.rotation - 120*self.rad)),
-                                       (self.end[0] - newX + trirad * math.sin(self.rotation + 120*self.rad),
+
+        if (self.directed):
+            theta = math.atan2(self.start[1] - self.end[1], self.end[0] - self.start[0])
+            
+            m = 25 + 9
+            newX = math.cos(theta) * m
+            newY = -math.sin(theta) * m
+
+
+            pygame.draw.polygon(screen, tricolor, ((self.end[0] - newX + trirad * math.sin(self.rotation),
+                                            self.end[1] - newY + trirad * math.cos(self.rotation)),
+                                        (self.end[0] - newX + trirad * math.sin(self.rotation - 120*self.rad),
+                                            self.end[1] - newY + trirad * math.cos(self.rotation - 120*self.rad)),
+                                        (self.end[0] - newX + trirad * math.sin(self.rotation + 120*self.rad),
                                         self.end[1] - newY + trirad * math.cos(self.rotation + 120*self.rad))))
 
                                     

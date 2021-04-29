@@ -4,32 +4,131 @@ import pygame, sys, random
 from pygame.constants import QUIT,KEYDOWN,K_UP, K_RIGHT, K_DOWN, K_LEFT, USEREVENT
 from pygame import init, quit, Vector2
 from Graph import Graph
+from buttons import Button
 
 ###> Setting up pygame
 init()
 pygame.mixer.pre_init(44100, -16, 2, 512) #! handles a lot of things. Used here to remove delay before sound plays
 clock = pygame.time.Clock()
 
-hor, ver, rightPanel = 1200, 900, 500
+hor, ver, panelHor = 1200, 1000, 275
+grid_size = 25
 pygame.display.set_caption("CAPTION")
 # pygame.display.set_icon(pygame.image.load(""))
-screen = pygame.Surface((hor, ver))
-full_screen = pygame.display.set_mode((hor + rightPanel, ver))
+canvas = pygame.Surface((hor, ver))
+panel = pygame.Surface((panelHor - grid_size, ver - grid_size*2))
+screen = pygame.display.set_mode((hor + panelHor, ver))
+
+#> Colors
+panelColor = (164, 250, 107) #(136, 248, 71)
+
+#> Buttons
+g = Graph(canvas, screen, 25, False)
+Button.surfaceX = hor + grid_size // 2
+Button.surfaceY = grid_size // 2
+
+button_offset = 75
+algo_Title_y = 0
+algo_Title = Button(45)
+algo_Title.btn_text = "Algorithms"
+algo_Title.cords = (0, algo_Title_y)
+algo_Title.trans = True
+algo_Title.txt_color = (0,0,0)
+algo_Title.bold = True
+
+uninfored_title = Button(30)
+uninfored_title.btn_text = "• Uninformed"
+uninfored_title.cords = (30, algo_Title_y + 75)
+uninfored_title.trans = True
+uninfored_title.txt_color = (0,0,0)
+uninfored_title.bold = True
+uninfored_title.render()
+# algo_Title.center = False
+bfs_btn = Button()
+bfs_btn.btn_text = "BFS Algorithm"
+bfs_btn.cords = (button_offset, algo_Title_y + 125)
+bfs_btn.render()
+
+dfs_btn = Button()
+dfs_btn.btn_text = "DFS Algorithm"
+dfs_btn.cords = (button_offset, algo_Title_y + 175)
+dfs_btn.render()
+
+ucs_btn = Button()
+ucs_btn.btn_text = "UCS Algorithm"
+ucs_btn.cords = (button_offset, algo_Title_y + 225)
+ucs_btn.render()
 
 
-g = Graph(screen, 25)
+infored_title = Button(30)
+infored_title.btn_text = "• Informed"
+infored_title.cords = (30, algo_Title_y + 275)
+infored_title.trans = True
+infored_title.txt_color = (0,0,0)
+infored_title.bold = True
+infored_title.render()
 
-def drawRightPanel(rightPanel):
-    pygame.draw.rect(full_screen, (227, 254, 213), (hor, 0, rightPanel, ver))
-    pygame.draw.rect(full_screen, (0, 0, 0), (hor, 0, rightPanel, ver), 8)
-    
+greedy_btn = Button()
+greedy_btn.btn_text = "GREEDY Algorithm"
+greedy_btn.cords = (button_offset, algo_Title_y + 325)
+greedy_btn.render()
 
+aStar_btn = Button()
+aStar_btn.btn_text = "A* Algorithm"
+aStar_btn.cords = (button_offset, algo_Title_y + 375)
+aStar_btn.render()
+
+
+control_Title_y = algo_Title_y + 425
+control_Title = Button(45)
+control_Title.btn_text = "Control"
+control_Title.cords = (0, control_Title_y)
+control_Title.trans = True
+control_Title.txt_color = (0,0,0)
+control_Title.bold = True
+# control_Title.center = False
+play_btn = Button()
+play_btn.btn_text = " Play Search "
+play_btn.cords = (button_offset, control_Title_y + 75)
+play_btn.render()
+
+stop_btn = Button()
+stop_btn.btn_text = " Stop Search "
+stop_btn.cords = (button_offset, control_Title_y + 125)
+stop_btn.render()
+
+
+graph_title_y = control_Title_y + 175
+graph_title = Button(45)
+graph_title.btn_text = "Graph"
+graph_title.cords = (0, graph_title_y)
+graph_title.trans = True
+graph_title.txt_color = (0,0,0)
+graph_title.bold = True
+# graph_title.center = False
+
+directed_btn = Button()
+directed_btn.btn_text = "Directed Graph"
+directed_btn.cords = (button_offset, graph_title_y + 75)
+directed_btn.render()
+
+clear_btn = Button()
+clear_btn.btn_text = " Clear "
+clear_btn.cords = (button_offset, graph_title_y + 125)
+clear_btn.render()
+#######################$
+algo_Title.render()
+
+control_Title.render()
+
+graph_title.render()    
+# directed_btn.render()
 def draw_grid(width, length, size):
         for hor in range(length // size):
-            pygame.draw.line(screen, (160, 160, 160), (0, size * hor), (width, size * hor))
+            pygame.draw.line(canvas, (160, 160, 160), (0, size * hor), (width, size * hor))
 
         for ver in range(width // size):
-            pygame.draw.line(screen, (160, 160, 160), (size * ver, 0), (size * ver, length))
+            pygame.draw.line(canvas, (160, 160, 160), (size * ver, 0), (size * ver, length))
 
 #> Main Loop
 #>
@@ -44,29 +143,73 @@ while(loop):
         if (event.type == QUIT):
             loop = False
 
-        if(event.type == pygame.MOUSEBUTTONDOWN):
-            if(event.button == 1):
-                if (g.addWeight(mouse)):
-                    pass
-                # elif (g.adding):
+        if(canvas.get_rect().collidepoint(mouse)):
+            if(event.type == pygame.MOUSEBUTTONDOWN):
+
+                if(event.button == 1):
+                    if not(g.addWeight(mouse)):
+                        g.addNode(mouse)
+                        g.addEdge(mouse)
+                elif (event.button == 3):
+                    g.removeNode(mouse)
                 else:
-                    g.addNode(mouse)
-                    g.addEdge(mouse)
-            elif (event.button == 3):
-                g.removeNode(mouse)
-            else:
-                g.breadth_first_search()
+                    g.BFS()
+                    # g.printGraph()
+
+        
+        else:
+            if(event.type == pygame.MOUSEBUTTONDOWN):
+                if(g.isEmpty()):
+                    g.directed = directed_btn.detect_toggle()
+
+                if (clear_btn.detect_click()):
+                    g.reset()
 
         
 
-    screen.fill( (255, 255, 255))
-    full_screen.fill((227, 254, 213))
-    draw_grid(hor, ver, 25)
-    drawRightPanel(rightPanel)
-    # g.draw_edges()
+    canvas.fill( (255, 255, 255))
+    panel.fill(panelColor)
+    screen.fill(panelColor)
+    pygame.draw.rect(screen, (0,0,0), (hor, 0, panelHor, ver), 10)
+    draw_grid(hor, ver, grid_size)
+    
+    g.draw_edges()
     g.draw_nodes(mouse)
+    
+    algo_Title.draw(panel)
+
+    uninfored_title.draw(panel)
+    bfs_btn.draw(panel)
+    bfs_btn.detect_hover(mouse)
+    dfs_btn.draw(panel)
+    dfs_btn.detect_hover(mouse)
+    ucs_btn.draw(panel)
+    ucs_btn.detect_hover(mouse)
+
+    infored_title.draw(panel)
+    greedy_btn.draw(panel)
+    greedy_btn.detect_hover(mouse)
+    aStar_btn.draw(panel)
+    aStar_btn.detect_hover(mouse)
+
+    control_Title.draw(panel)
+    play_btn.draw(panel)
+    play_btn.detect_hover(mouse)
+    stop_btn.draw(panel)
+    stop_btn.detect_hover(mouse)
+
+    graph_title.draw(panel)
+
+    directed_btn.draw(panel)
+    directed_btn.detect_hover(mouse)
+    
+    clear_btn.draw(panel)
+    clear_btn.detect_hover(mouse)
+
+
     #$ Update Display
-    full_screen.blit(screen, (0,0))
+    screen.blit(canvas, (0,0))
+    screen.blit(panel, (hor + grid_size // 2, grid_size // 2))
     pygame.display.update()
     clock.tick(60)
 

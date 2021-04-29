@@ -15,7 +15,7 @@ class TextBox:
         self.font = pygame.font.Font(None, 30)
         
 
-    def takeInput(self, screen, g):
+    def takeInput(self, surface, screen):
         self.color = (162, 237, 50)
         loop = True
         while(loop):
@@ -27,11 +27,13 @@ class TextBox:
                 if(event.type == pygame.MOUSEBUTTONDOWN):
                     if not(self.rect.collidepoint(pygame.mouse.get_pos())):
                         self.color = (255, 255, 255)
+                        print(int(self.text) + 1, self.text)
                         return int(self.text)
                 if (event.type == pygame.KEYDOWN):
 
                     if(event.key == pygame.K_RETURN):
                         self.color = (255, 255, 255)
+                        print(int(self.text) + 1, self.text)
                         return int(self.text)
                         loop = False
 
@@ -44,15 +46,16 @@ class TextBox:
                             continue
                         self.text += event.unicode
 
-            self.render(screen)
+            self.render(surface)
             clock.tick(50)
+            screen.blit(surface, (0,0))
             pygame.display.update()
 
-    def render(self, screen):
+    def render(self, surface):
         font_surface = self.font.render(self.text, True, (0, 0, 0))
         font_rect = font_surface.get_rect()
         font_rect.left = self.rect.left + 5
         font_rect.centery = self.rect.centery
-        pygame.draw.rect(screen, self.color, self.rect) #206, 219, 221
-        pygame.draw.rect(screen, (0,0,0), self.rect, 3)
-        screen.blit(font_surface, font_rect)
+        pygame.draw.rect(surface, self.color, self.rect) #206, 219, 221
+        pygame.draw.rect(surface, (0,0,0), self.rect, 3)
+        surface.blit(font_surface, font_rect)
