@@ -24,7 +24,7 @@ class Button:
     """
     surfaceX = 0
     surfaceY = 0
-    offset = -50
+
     def __init__(self, font_size = 20):
     #$ text
         self.font_size = font_size
@@ -96,6 +96,8 @@ class Button:
         if not(self.trans):
             if (self.toggled):
                 pygame.draw.rect(screen, (72, 255, 36), self.bg_rect, 0, self.radius)
+            elif (self.hover):
+                pygame.draw.rect(screen, (255, 244, 128), self.bg_rect, 0, self.radius)
             else:
                 pygame.draw.rect(screen, self.btn_bg, self.bg_rect, 0, self.radius)
 
@@ -107,7 +109,8 @@ class Button:
         screen.blit(self.btn_surface, self.btn_rect)
 
     def detect_hover(self, mouse_cord):
-        relMouse = mouse_cord[0] - self.reMouseX ,mouse_cord[1]  - self.reMouseY
+        
+        relMouse = mouse_cord #mouse_cord[0] - self.reMouseX ,mouse_cord[1]  - self.reMouseY
         if (self.bg_rect.collidepoint(relMouse)):   
             self.hover = True                
             self.border_width = 3

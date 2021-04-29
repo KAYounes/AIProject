@@ -13,7 +13,7 @@ class Graph:
         self.edge = []
         self.edges = []
         self.directed = directed
-        self.font = pygame.font.Font(None, 40)
+        self.font = pygame.font.Font("RobotoCondensed-Regular.ttf", 20)
         self.adding = False
 
     def addNode(self, point):
@@ -41,7 +41,7 @@ class Graph:
             self.adding = False
         else:
             for node in self.nodes:
-                if (node.insideNode(point, self.margin)):
+                if (node.insideNode(point, self.padding)):
 
                     if (node in self.edge):
                         self.edge = []
@@ -72,7 +72,7 @@ class Graph:
     def draw_nodes(self, point):
 
         for state,node in enumerate(self.nodes):
-            node.state = state
+            node.state = "S" + str(state)
             pygame.draw.circle(self.surface, (48, 48, 48), (node.center.x + 2, node.center.y + 2), node.radius) #> Shadow
             
             if (node in self.edge): #> Selected
@@ -87,22 +87,27 @@ class Graph:
                 # node.color = (255, 255, 255)
                 pygame.draw.circle(self.surface, node.defaultColor, node.center, node.radius) #> Node fill
 
-
+            node.draw_state(self.font, self.surface)
+            node.tb.render(self.surface, self.font)
             pygame.draw.circle(self.surface, (0,0,0), node.center, node.radius, 3) #> Node border
             
 
     def draw_edges(self):
         for edge in self.edges:
             edge.draw(self.surface, edge.color, (0,255,0))
-            edge.tb.render(self.surface)
+            edge.tb.render(self.surface, self.font)
     
 
     def addWeight(self, point):
         for node in self.nodes:
-            for adj in node.adjacent:
-                if(adj[1].tb.rect.collidepoint(point)):
-                    adj[1].weight = adj[1].tb.takeInput(self.surface, self.screen)
-                    return True
+            if (node.tb.rect.collidepoint(point)):
+                node.heuristic = node.tb.takeInput(self.surface, self.screen, self.font)
+                return True
+            else:
+                for adj in node.adjacent:
+                    if(adj[1].tb.rect.collidepoint(point)):
+                        adj[1].weight = adj[1].tb.takeInput(self.surface, self.screen, self.font)
+                        return True
 
 
     def isEmpty(self):
@@ -115,9 +120,10 @@ class Graph:
 
     def printGraph(self):
         for node in self.nodes:
-            print(">", node.center)
-            for adj in node.adjacent:
-                print(adj[1].weight)
+            print(node)
+            # print(">", node.center)
+            # for adj in node.adjacent:
+            #     print(adj[1].weight)
 
     def breadth_first_search(self): 
         start = self.nodes[0]
@@ -153,8 +159,12 @@ class Graph:
         return True
 
     def BFS(self):
+
+        #> Potential Bug
+            #$ Calling BFS with 1 node returns the last calculated cost
+
         speed = pygame.USEREVENT + 1
-        pygame.time.set_timer(speed, 2750)
+        pygame.time.set_timer(speed, 10)
         
         speed2 = pygame.USEREVENT + 2
         pygame.time.set_timer(speed2, 750)
@@ -198,10 +208,38 @@ class Graph:
                     self.screen.blit(self.surface, (0,0))
                     pygame.display.update()
 
-        while(goal is not None):
+        while(goal.parent is not None):
             print( goal.getEdgeFromParent())
             cost += goal.getEdgeFromParent().weight
             goal = goal.parent
             
         print(">>", cost)
         return True
+
+    def runAlgorithm(self, algorithm, btn, panel):
+        loop = True
+        while(loop):
+            mouse = pygame.mouse.get_pos()
+
+            #$ Event Loop
+            for event in pygame.event.get():        
+                #$ QUIT event
+                if (event.type == pygame.QUIT):
+                    loop = False
+                if(event.type == pygame.MOUSEBUTTONDOWN):
+                    if (btn.detect_click()):
+                        btn.btn_bg = (255, 0, 0)
+
+            btn.detect_hover(mouse)
+            btn.draw(panel)
+
+            # self.screen.blit(self.canvas, (0,0))
+            self.screen.blit(panel, (1200 + 25 // 2, 25 // 2))
+            pygame.display.update()
+            # clock.tick(60)
+
+# def displayMessage(self):
+#     msg_surf = self.font.render(message, True, (0, 0, 0))
+#     msg_rect = msg_surf.get_rect()
+
+#     msx_box = pygame.Rect(x, y, msg_rect.width, msg_rect.hight)

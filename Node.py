@@ -1,27 +1,37 @@
 import pygame
 from pygame import Vector2
-
+from TextBox import TextBox
 class Node:
-    state_count = 0
-    def __init__(self, center, color = (255, 255, 255), radius = 30, width = 0):
+    def __init__(self, center, radius = 30, width = 0):
         self.center = Vector2(center)
-        self.defaultColor = (255, 255, 255)
-        self.hoverColor = (100, 50, 236) 
-        self.selectedColor = (162, 237, 50)  
-        self.currentColor = color
-        self.fringeColor = color
-        self.parent = None
-        self.state = 0
         self.radius = radius
         self.width = width
+
+        self.defaultColor = (255, 255, 255)
+        self.hoverColor = (140, 103, 240) #$ old color (100, 50, 236) 
+        self.selectedColor = (162, 237, 50)  
+        self.currentColor = None
+        self.fringeColor = None
+        
         self.adjacent = []
-        self.edgeColor = (0, 0, 0)
+        self.parent = None
+        self.state = ""
+        self.heuristic = 1
+
+        self.tb = TextBox(self.center.x, self.center.y - self.radius * 1.7, 42, 23,allowZero=True)
 
     def __eq__(self, node):
         return (self.center == node.center)
 
     def __str__(self):
-        return f"|| node center: {self.center} __ node parent: {self.parent} __ path cost from parent: {self.getEdgeFromParent().weight} ||"
+        return f"""---------------------------- 
+state: {self.state}\n
+center: {self.center}\n
+parent: {self.parent.state if self.parent is not None else "No parent"}\n
+cost from parent: {self.getEdgeFromParent().weight if self.parent is not None else "No parent"}\n
+heuristic: {self.heuristic}
+----------------------------
+"""
 
     def insideNode(self, point, margin):
         return (
@@ -43,7 +53,13 @@ class Node:
         
         return 0
 
-
+    def draw_state(self, font, surface):
+        state_surface = font.render(self.state, True, (0,0,0))
+        state_rect = state_surface.get_rect()
+        state_rect.center = self.center
+        surface.blit(state_surface, state_rect)
+        
+        # return state_surface, state_surface.get_rect()
 
     
     
