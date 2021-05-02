@@ -18,7 +18,7 @@ pygame.display.set_caption("CAPTION")
 # pygame.display.set_icon(pygame.image.load(""))
 canvas = pygame.Surface((hor, ver))
 # panelSurf = pygame.Surface((panelHor - grid_size, ver - grid_size*2))
-panel = Panel(hor + grid_size // 2, grid_size // 2, panelHor - grid_size, ver - grid_size*2, (164, 250, 107))
+panel = Panel(hor + grid_size // 2, grid_size // 2, panelHor - grid_size, ver - grid_size , (164, 250, 107))
 screen = pygame.display.set_mode((hor + panelHor, ver))
 
 #> Colors
@@ -126,15 +126,21 @@ Button.surfaceY = grid_size // 2
 # graph_title.render()    
 # directed_btn.render()
 def draw_grid(width, length, size):
-        for hor in range(length // size):
-            pygame.draw.line(canvas, (160, 160, 160), (0, size * hor), (width, size * hor))
+    grid_surf = pygame.Surface((width, length))
+    grid_surf.set_colorkey((0, 0, 0))
 
-        for ver in range(width // size):
-            pygame.draw.line(canvas, (160, 160, 160), (size * ver, 0), (size * ver, length))
+    for hor in range(length // size):
+        pygame.draw.line(grid_surf, (160, 160, 160), (0, size * hor), (width, size * hor))
+
+    for ver in range(width // size):
+        pygame.draw.line(grid_surf, (160, 160, 160), (size * ver, 0), (size * ver, length))
+
+    return grid_surf
 
 #> Main Loop
 #>
 loop = True
+speed = 250
 
 while(loop):
     mouse = pygame.mouse.get_pos()
@@ -156,36 +162,62 @@ while(loop):
                     g.removeNode(mouse)
                 else:
                     # g.BFS()
-                    g.printGraph()
-                    # g.runAlgorithm(0, play_btn, panel)
+                    g.DFS()
+                    # g.printGraph()
 
         elif (panel.mouseOnPanel(mouse)):
             if(event.type == pygame.MOUSEBUTTONDOWN):
                 if(event.button == 1):
                     if(g.isEmpty()):
                         g.directed = panel.directed_btn.detect_toggle()
-                    elif(panel.clear_btn.detect_click()):
+                    
+                    if(panel.clear_btn.detect_click()):
                         g.reset()
+                    elif(panel.bfs_btn.detect_click()):
+                        panel.bfs_btn.detect_toggle()
+                        g.runAlgorithm(panel, draw_grid(hor, ver, grid_size), "BFS", speed)
+                        panel.bfs_btn.toggled = False
+
+                    elif(panel.ucs_btn.detect_click()):
+                        panel.ucs_btn.detect_toggle()
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "UCS", speed)
+                        panel.ucs_btn.toggled = False
+
+                    elif(panel.dfs_btn.detect_click()):
+                        panel.dfs_btn.detect_toggle()
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "DFS", speed) 
+                        panel.dfs_btn.toggled = False
+                    
+                    elif (panel.speed_btn.detect_click()):
+                        speed = panel.speed_control()
+
+                    if (panel.showH_btn.detect_click()):
+                        g.showHeuristic = panel.showH_btn.detect_toggle()
+
 
 
         
 
     canvas.fill( (255, 255, 255))
+    canvas.blit(draw_grid(hor, ver, grid_size), (0,0))
     panel.fill()
     screen.fill(panelColor)
     pygame.draw.rect(screen, (0,0,0), (hor, 0, panelHor, ver), 10)
-    draw_grid(hor, ver, grid_size)
+    
+    panel.displayMessage("Draw a Graph, then select an algorithm to run on the graph. nl > ADD Node [Left CLick]. nl > Remove Node [Right Click]. nl > Select Node [Left Click]")
     
     g.draw_edges()
     g.draw_nodes(mouse)
     panel.draw_btns()
     panel.btnDetect_hover(mouse)
-
     #$ Update Display
     screen.blit(canvas, (0,0))
     screen.blit(panel.panel_surf, (panel.cordX, panel.cordY))
     pygame.display.update()
     clock.tick(60)
+    # pygame.time.delay(3000)
+    # loop = False
+  
 
 quit()
 sys.exit()

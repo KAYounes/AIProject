@@ -2,21 +2,31 @@ import pygame
 from pygame import Vector2
 from TextBox import TextBox
 class Node:
+    default_color = (255, 255, 255)
+    hovered_color = (50, 50, 237) #$ (140, 103, 240) #$ old color (100, 50, 236) 
+    selected_color = (162, 237, 50)  
+    current_node_color = (255, 140, 78)
+    in_fringe_color = (149, 162, 169)
+    start_state_color = (116, 255, 41)
+    goal_state_color = (255, 237, 40)
+    visited_color = (245, 95, 95)
+
     def __init__(self, center, radius = 30, width = 0):
         self.center = Vector2(center)
         self.radius = radius
         self.width = width
 
-        self.defaultColor = (255, 255, 255)
-        self.hoverColor = (140, 103, 240) #$ old color (100, 50, 236) 
-        self.selectedColor = (162, 237, 50)  
-        self.currentColor = None
-        self.fringeColor = None
-        
+        self.color = Node.default_color
+
         self.adjacent = []
         self.parent = None
+        self.parents = []
         self.state = ""
         self.heuristic = 1
+        self.total_cost = 0
+        self.type = ""
+
+        self.selected = False
 
         self.tb = TextBox(self.center.x, self.center.y - self.radius * 1.7, 42, 23,allowZero=True)
 
@@ -24,14 +34,17 @@ class Node:
         return (self.center == node.center)
 
     def __str__(self):
-        return f"""---------------------------- 
-state: {self.state}\n
-center: {self.center}\n
-parent: {self.parent.state if self.parent is not None else "No parent"}\n
-cost from parent: {self.getEdgeFromParent().weight if self.parent is not None else "No parent"}\n
-heuristic: {self.heuristic}
-----------------------------
-"""
+        return f"State {self.state} - Adjacent: {list(map(lambda x: x[0].state, self.adjacent))}"
+#     def __str__(self):
+#         return f"""---------------------------- 
+# state: {self.state}\n
+# center: {self.center}\n
+# parent: {self.parent.state if self.parent is not None else "No parent"}\n
+# cost from parent: {self.getEdgeFromParent().weight if self.parent is not None else "No parent"}\n
+# Total cost parent: {self.total_cost}\n
+# heuristic: {self.heuristic}
+# ----------------------------
+#"""
 
     def insideNode(self, point, margin):
         return (
@@ -43,6 +56,13 @@ heuristic: {self.heuristic}
 
     def addConnection(self, node, edge):
         self.adjacent.append([node, edge])
+
+    def removeConnection(self, node):
+        for adj in self.adjacent:
+            if node == adj[0]:
+                self.adjacent.remove(adj)
+        
+
 
     def getEdgeFromParent(self):
         if (self.parent is None):

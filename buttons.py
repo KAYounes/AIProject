@@ -25,7 +25,7 @@ class Button:
     surfaceX = 0
     surfaceY = 0
 
-    def __init__(self, font_size = 20):
+    def __init__(self, font_size = 18):
     #$ text
         self.font_size = font_size
         self.bold_font = pygame.font.Font("RobotoCondensed-Bold.ttf", font_size)  #$ font object        
@@ -96,6 +96,7 @@ class Button:
         if not(self.trans):
             if (self.toggled):
                 pygame.draw.rect(screen, (72, 255, 36), self.bg_rect, 0, self.radius)
+                pygame.draw.rect(screen, (0, 0, 0), self.bg_rect, 3, self.radius)
             elif (self.hover):
                 pygame.draw.rect(screen, (255, 244, 128), self.bg_rect, 0, self.radius)
             else:
@@ -109,9 +110,8 @@ class Button:
         screen.blit(self.btn_surface, self.btn_rect)
 
     def detect_hover(self, mouse_cord):
-        
-        relMouse = mouse_cord #mouse_cord[0] - self.reMouseX ,mouse_cord[1]  - self.reMouseY
-        if (self.bg_rect.collidepoint(relMouse)):   
+
+        if (self.bg_rect.collidepoint(mouse_cord)):   
             self.hover = True                
             self.border_width = 3
         else:
