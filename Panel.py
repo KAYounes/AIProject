@@ -16,13 +16,13 @@ class Panel:
         self.ver = vertical
         self.panel_color = color
 
-        self.speed = 250
+        self.speed = 2000
 
         self.font = pygame.font.Font("RobotoCondensed-Light.ttf", 20)
         
         self.panel_surf = pygame.Surface((self.hor, self.ver))
         
-        self.button_offset_x = 75
+        self.button_offset_x = 45
         self.button_offset_y = 45
         self.algo_Title_y = 0
         self.algo_Title = Button(30)
@@ -84,21 +84,21 @@ class Panel:
         self.control_Title.bold = True
 
         self.play_btn = Button()
-        self.play_btn.btn_text = " Play Search "
+        self.play_btn.btn_text = " Play "
         self.play_btn.cords = (self.button_offset_x, self.control_Title_y + self.button_offset_y)
         self.play_btn.render()
 
         self.stop_btn = Button()
-        self.stop_btn.btn_text = " Stop Search "
-        self.stop_btn.cords = (self.button_offset_x, self.control_Title_y + self.button_offset_y * 2)
+        self.stop_btn.btn_text = " Stop "
+        self.stop_btn.cords = (self.button_offset_x + self.play_btn.bg_rect.width * 1.25, self.control_Title_y + self.button_offset_y)
         self.stop_btn.render()
 
         self.speed_btn = Button()
         self.speed_btn.btn_text = "Search Speed: " + str(self.speed  * 100 / 2000) + "%"
-        self.speed_btn.cords = (self.button_offset_x, self.control_Title_y + self.button_offset_y * 3)
+        self.speed_btn.cords = (self.button_offset_x, self.control_Title_y + self.button_offset_y * 2)
         self.speed_btn.render()
 
-        self.graph_title_y = self.control_Title_y + self.button_offset_y * 4
+        self.graph_title_y = self.control_Title_y + self.button_offset_y * 3
         self.graph_title = Button(30)
         self.graph_title.btn_text = "Graph"
         self.graph_title.cords = (0, self.graph_title_y)
@@ -113,14 +113,19 @@ class Panel:
 
         self.clear_btn = Button()
         self.clear_btn.btn_text = " Clear "
-        self.clear_btn.cords = (self.button_offset_x, self.graph_title_y + self.button_offset_y * 2)
+        self.clear_btn.cords = (self.button_offset_x + self.directed_btn.btn_rect.width * 1.25, self.graph_title_y + self.button_offset_y)
         self.clear_btn.render()
         
         self.showH_btn = Button()
         self.showH_btn.btn_text = "Show Heuristic"
-        self.bottom = (self.graph_title_y + self.button_offset_y * 3)
-        self.showH_btn.cords = (self.button_offset_x, self.bottom)
+        self.showH_btn.cords = (self.button_offset_x, self.graph_title_y + self.button_offset_y * 2)
         self.showH_btn.render()
+
+        self.showC_btn = Button()
+        self.showC_btn.btn_text = "Show Edge Cost"
+        self.bottom = (self.graph_title_y + self.button_offset_y * 3)
+        self.showC_btn.cords = (self.button_offset_x, self.bottom)
+        self.showC_btn.render()
 
         self.algo_Title.render()
 
@@ -149,6 +154,8 @@ class Panel:
         self.directed_btn.draw(self.panel_surf)
         self.clear_btn.draw(self.panel_surf)
         self.showH_btn.draw(self.panel_surf)
+        self.showC_btn.draw(self.panel_surf)
+
 
     def btnDetect_hover(self, mouse):
         relMouse = (mouse[0] - self.cordX, mouse[1] - self.cordY)
@@ -164,6 +171,8 @@ class Panel:
         self.directed_btn.detect_hover(relMouse)
         self.clear_btn.detect_hover(relMouse)
         self.showH_btn.detect_hover(relMouse)
+        self.showC_btn.detect_hover(relMouse)
+
 
     def btnDetect_click(self, mouse):
         self.btnDetect_hover(mouse)
@@ -229,11 +238,11 @@ class Panel:
             offset += 1
 
     def speed_control(self):
-        if (self.speed == 2000):
-            self.speed = 0
+        if (self.speed == 250):
+            self.speed = 2000
 
-        self.speed += 250
-        self.speed_btn.btn_text = "Search Speed: " + str(self.speed / 2000 * 100) + "%"
+        self.speed -= 250
+        self.speed_btn.btn_text = "Search Speed: " + str(2 - (self.speed) / 1000) + "X"
         self.speed_btn.render()
         return self.speed
             

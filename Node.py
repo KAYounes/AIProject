@@ -24,6 +24,7 @@ class Node:
         self.state = ""
         self.heuristic = 1
         self.total_cost = 0
+        self.f_cost = 0
         self.type = ""
 
         self.selected = False
@@ -81,5 +82,7 @@ class Node:
         
         # return state_surface, state_surface.get_rect()
 
+    def update_f_cost(self):
+        self.f_cost = self.total_cost + self.heuristic
     
     

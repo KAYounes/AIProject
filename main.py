@@ -187,12 +187,25 @@ while(loop):
                         panel.dfs_btn.detect_toggle()
                         g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "DFS", speed) 
                         panel.dfs_btn.toggled = False
-                    
+
+                    elif(panel.greedy_btn.detect_click()):
+                        panel.greedy_btn.detect_toggle()
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "GRY", speed) 
+                        panel.greedy_btn.toggled = False
+
+                    elif(panel.aStar_btn.detect_click()):
+                        panel.aStar_btn.detect_toggle()
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "AST", speed) 
+                        panel.aStar_btn.toggled = False
+
                     elif (panel.speed_btn.detect_click()):
                         speed = panel.speed_control()
 
                     if (panel.showH_btn.detect_click()):
                         g.showHeuristic = panel.showH_btn.detect_toggle()
+
+                    if (panel.showC_btn.detect_click()):
+                        g.showCost = panel.showC_btn.detect_toggle()                   
 
 
 
