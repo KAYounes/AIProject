@@ -203,7 +203,7 @@ class Graph:
                                     cost = self.BFS(start_state, goal_states, speed)
 
                                 elif (algorithm == "UCS"):
-                                    print("Run UCS")
+                                    # print("Run UCS")
                                     cost = self.UCS(start_state, goal_states, speed)
 
                                 elif (algorithm == "DFS"):
@@ -328,9 +328,9 @@ class Graph:
                         current = item_out[2]
                         visited.append(current)
 
-                        print("> Current ", current)
-                        print("> Goals ")
-                        list(map(lambda x: print(x), goal_states))
+                        # print("> Current ", current)
+                        # print("> Goals ")
+                        # list(map(lambda x: s(x), goal_states))
                         if (current.parent is not None):
                             current.getEdgeFromParent().color = (143, 115, 104)
 
@@ -359,6 +359,7 @@ class Graph:
 
                                 counter += 1                                                            
                                 fringe.put((adj[0].total_cost, counter, adj[0]))
+                        
 
                         current.color = Node.current_node_color
 
@@ -398,7 +399,7 @@ class Graph:
                     visited.append(current)
 
                     current.color = Node.current_node_color
-                    print(current)
+                    # print(current)
 
                     if current in goal_states:
                         current.color = Node.goal_state_color
@@ -428,8 +429,6 @@ class Graph:
         return False
 
 
-
-
     def GRDY(self, start_state, goal_states, speed = 750):
             speed_event = pygame.USEREVENT + 1
             pygame.time.set_timer(speed_event, speed)
@@ -448,9 +447,9 @@ class Graph:
                         current = item_out[2]
                         visited.append(current)
 
-                        print("> Current ", current)
-                        print("> Goals ")
-                        list(map(lambda x: print(x), goal_states))
+                        # print("> Current ", current)
+                        # print("> Goals ")
+                        # list(map(lambda x: print(x), goal_states))
                         if (current.parent is not None):
                             current.getEdgeFromParent().color = (143, 115, 104)
 
@@ -495,9 +494,9 @@ class Graph:
                         current = item_out[2]
                         visited.append(current)
 
-                        print("> Current ", current)
-                        print("> Goals ")
-                        list(map(lambda x: print(x), goal_states))
+                        # print("> Current ", current)
+                        # print("> Goals ")
+                        # list(map(lambda x: print(x), goal_states))
                         if (current.parent is not None):
                             current.getEdgeFromParent().color = (143, 115, 104)
 

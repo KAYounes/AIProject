@@ -100,7 +100,7 @@ class Button:
             elif (self.hover):
                 pygame.draw.rect(screen, (255, 244, 128), self.bg_rect, 0, self.radius)
                 if (self.toggled):
-                    pygame.draw.rect(screen, (255, 244, 128), self.bg_rect, 4, self.radius)
+                    pygame.draw.rect(screen, (37, 211, 230), self.bg_rect, 4, self.radius)
             else:
                 pygame.draw.rect(screen, self.btn_bg, self.bg_rect, 0, self.radius)
 

@@ -35,7 +35,7 @@ class Node:
         return (self.center == node.center)
 
     def __str__(self):
-        return f"State {self.state} - Adjacent: {list(map(lambda x: x[0].state, self.adjacent))}"
+        return f"State {self.state}" # - Adjacent: {list(map(lambda x: x[0].state, self.adjacent))}"
 #     def __str__(self):
 #         return f"""---------------------------- 
 # state: {self.state}\n
