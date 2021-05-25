@@ -16,7 +16,7 @@ class Panel:
         self.ver = vertical
         self.panel_color = color
 
-        self.speed = 2000
+        self.speed = 750
 
         self.font = pygame.font.Font("RobotoCondensed-Light.ttf", 20)
         
@@ -94,7 +94,7 @@ class Panel:
         self.stop_btn.render()
 
         self.speed_btn = Button()
-        self.speed_btn.btn_text = "Search Speed: " + str(self.speed  * 100 / 2000) + "%"
+        self.speed_btn.btn_text = "Search Speed: " + str(2 - (self.speed) / 1000) + "X"
         self.speed_btn.cords = (self.button_offset_x, self.control_Title_y + self.button_offset_y * 2)
         self.speed_btn.render()
 

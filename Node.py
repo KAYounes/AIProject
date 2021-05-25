@@ -29,7 +29,7 @@ class Node:
 
         self.selected = False
 
-        self.tb = TextBox(self.center.x, self.center.y - self.radius * 1.7, 42, 23,allowZero=True)
+        self.tb = TextBox(self.center.x, self.center.y - self.radius * 1.7, 42, 23, color = (219, 189, 247),allowZero=True)
 
     def __eq__(self, node):
         return (self.center == node.center)

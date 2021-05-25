@@ -18,7 +18,7 @@ class TextBox:
 
     def takeInput(self, surface, screen, font):
         #> BUG
-            #$ if textbox is empty (no text) and then deactivated, program crashes since int("") is not valid
+            #solved #$ if textbox is empty (no text) and then deactivated, program crashes since int("") is not valid
         self.color = (162, 237, 50)
         loop = True
         while(loop):

@@ -1,8 +1,8 @@
 import pygame, sys
 from Node import Node
 from Edge import Edge
-from queue import PriorityQueue
-
+# from queue import PriorityQueue
+from fringe import PriorityQueue
 class Graph:
     def __init__(self, surface, screen, radius, directed = False):
         self.surface = surface
@@ -215,7 +215,7 @@ class Graph:
                                 elif (algorithm == "AST"):
                                     cost = self.ASRT(start_state, goal_states, speed)
 
-                                message = f"Total Cost to goal {cost}. nl Algorithm has finished execution. nl Press stop search to return back to drawing."
+                                message = f"Total Cost to goal {cost}. nl Algorithm has finished execution. nl Press `Play` to run the algorithm again or nl Press stop search to return back to drawing."
 
                         elif (panel.speed_btn.detect_click()):
                             speed = panel.speed_control()
@@ -263,8 +263,7 @@ class Graph:
 
 
     def BFS(self, start_state, goal_states, speed = 750):
-        #> Potential Bug
-            #$ Calling BFS with 1 node returns the last calculated cost
+        print("BFS Search RUN", speed)
 
         speed_event = pygame.USEREVENT + 1
         pygame.time.set_timer(speed_event, speed)
@@ -274,13 +273,17 @@ class Graph:
         visited = []
         goal = goal_states
         current = None
+        state_fringe = []
 
         while(len(fringe) > 0):
             for event in pygame.event.get():
                 if event.type == speed_event:
+                    state_fringe = list(map(lambda x: x.state, fringe))
+
+                    print(state_fringe)            
                     current = fringe[0]
                     if (current.parent is not None):
-                        current.getEdgeFromParent().color = (143, 115, 104)
+                        current.getEdgeFromParent().color = (117, 116, 115)
                     visited.append(current)
                     fringe = fringe[1:]
 
@@ -289,18 +292,12 @@ class Graph:
                         current.color = Node.goal_state_color
                         return self.path_to_goal(current)
                         
-                        
-
                     for adj in current.adjacent:
-                        if adj[0] not in visited:
+                        if adj[0] not in visited and adj[0] not in fringe:
                             adj[0].color = Node.in_fringe_color
                             if (adj[0] not in fringe):
                                 adj[0].parent = current
-                            fringe.append(adj[0])
-                            
-                        # else:
-                        #     adj[0].color = Node.visited_color
-                    
+                            fringe.append(adj[0])                   
 
                     self.draw_edges()
                     self.draw_nodes((0,0))
@@ -310,71 +307,8 @@ class Graph:
                     current.color = Node.visited_color
 
 
-    def UCS(self, start_state, goal_states, speed = 750):
-            speed_event = pygame.USEREVENT + 1
-            pygame.time.set_timer(speed_event, speed)
-
-            root = start_state
-            counter = 0
-            fringe = PriorityQueue()
-            fringe.put((0, counter, root))  # the counter is used to differentiate between elements with the same weight
-            visited = []
-
-            while not fringe.empty():
-                for event in pygame.event.get():
-                    if event.type == speed_event:
-                        
-                        item_out = fringe.get()
-                        current = item_out[2]
-                        visited.append(current)
-
-                        # print("> Current ", current)
-                        # print("> Goals ")
-                        # list(map(lambda x: s(x), goal_states))
-                        if (current.parent is not None):
-                            current.getEdgeFromParent().color = (143, 115, 104)
-
-
-                        if current in goal_states:
-                            current.color = Node.goal_state_color
-                            return self.path_to_goal(current)
-
-                        for adj in current.adjacent:
-                            betterSol = current.total_cost + adj[1].weight < adj[0].total_cost
-                            adj[0].color = Node.in_fringe_color
-
-                            if adj[0] not in visited:
-
-                                if (adj[0].parent is None):
-                                    adj[0].parent = current
-                                    adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight
-                                    counter += 1                                                            
-                                    fringe.put((adj[0].total_cost, counter, adj[0]))
-                                    visited.append(adj[0])
-
-                            elif betterSol:
-                                adj[0].parent = current
-                                adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight
-                                # betterSol = True
-
-                                counter += 1                                                            
-                                fringe.put((adj[0].total_cost, counter, adj[0]))
-                        
-
-                        current.color = Node.current_node_color
-
-                        self.draw_edges()
-                        self.draw_nodes((0, 0))
-                        self.screen.blit(self.surface, (0, 0))
-                        pygame.display.update()
-
-                        current.color = Node.visited_color
-
-
     def DFS(self, start_state, goal_states, speed = 750):
-
-        # > Potential Bug
-        # $ Calling BFS with 1 node returns the last calculated cost
+        print("DFS Search RUN") 
 
         speed_event = pygame.USEREVENT + 1
         pygame.time.set_timer(speed_event, speed)
@@ -394,7 +328,7 @@ class Graph:
                     current = fringe.pop()
 
                     if (current.parent is not None):
-                        current.getEdgeFromParent().color = (143, 115, 104)
+                        current.getEdgeFromParent().color = (117, 116, 115)
 
                     visited.append(current)
 
@@ -429,29 +363,89 @@ class Graph:
         return False
 
 
-    def GRDY(self, start_state, goal_states, speed = 750):
+    def UCS(self, start_state, goal_states, speed = 750):
+            print("UCS Search RUN")
             speed_event = pygame.USEREVENT + 1
             pygame.time.set_timer(speed_event, speed)
 
             root = start_state
             counter = 0
             fringe = PriorityQueue()
-            fringe.put((root.heuristic , counter, root))  # the counter is used to differentiate between elements with the same weight
+            fringe.add(root, 0)  # the counter is used to differentiate between elements with the same weight
             visited = []
 
             while not fringe.empty():
                 for event in pygame.event.get():
                     if event.type == speed_event:
+                        # print(fringe.nodes)
+                        fringe.display_queue()
                         
-                        item_out = fringe.get()
-                        current = item_out[2]
+                        current = fringe.pop() 
                         visited.append(current)
 
                         # print("> Current ", current)
                         # print("> Goals ")
-                        # list(map(lambda x: print(x), goal_states))
+                        # list(map(lambda x: s(x), goal_states))
                         if (current.parent is not None):
-                            current.getEdgeFromParent().color = (143, 115, 104)
+                            current.getEdgeFromParent().color = (117, 116, 115)
+
+
+                        if current in goal_states:
+                            current.color = Node.goal_state_color
+                            return self.path_to_goal(current)
+
+                        for adj in current.adjacent:
+                            betterSol = current.total_cost + adj[1].weight < adj[0].total_cost
+
+                            if adj[0] not in visited or fringe.inside(adj[0]):
+
+                                if (adj[0].parent is None):
+                                    adj[0].parent = current
+                                    adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight                                                          
+                                    fringe.add(adj[0], adj[0].total_cost)
+                                    visited.append(adj[0])
+                                    adj[0].color = Node.in_fringe_color
+
+                            elif fringe.inside(adj[0]) and betterSol:
+                                adj[0].parent = current
+                                adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight
+                                fringe.replace((adj[0], adj[0].total_cost))                                                           
+                                fringe.add(adj[0], adj[0].total_cost)
+                                adj[0].color = Node.in_fringe_color
+
+                        
+
+                        current.color = Node.current_node_color
+
+                        self.draw_edges()
+                        self.draw_nodes((0, 0))
+                        self.screen.blit(self.surface, (0, 0))
+                        pygame.display.update()
+
+                        current.color = Node.visited_color
+
+
+    def GRDY(self, start_state, goal_states, speed = 750):
+            print("Greedy Search RUN")
+            speed_event = pygame.USEREVENT + 1
+            pygame.time.set_timer(speed_event, speed)
+
+            root = start_state
+            counter = 0
+            fringe = PriorityQueue()
+            fringe.add(root, root.heuristic)  # the counter is used to differentiate between elements with the same weight
+            visited = []
+
+            while not fringe.empty():
+                for event in pygame.event.get():
+                    if event.type == speed_event:
+                        fringe.display_queue()
+
+                        current = fringe.pop()
+                        visited.append(current)
+
+                        if (current.parent is not None):
+                            current.getEdgeFromParent().color = (117, 116, 115)
 
                         current.color = Node.current_node_color
 
@@ -463,9 +457,8 @@ class Graph:
                             adj[0].color = Node.in_fringe_color
 
                             if adj[0] not in visited:
-                                adj[0].parent = current
-                                counter += 1                                                            
-                                fringe.put((adj[0].heuristic, counter, adj[0]))
+                                adj[0].parent = current                                                       
+                                fringe.add(adj[0], adj[0].heuristic)
 
 
                         self.draw_edges()
@@ -475,7 +468,9 @@ class Graph:
 
                         current.color = Node.visited_color
 
+
     def ASRT(self, start_state, goal_states, speed = 750):
+            print("A* Search RUN")
             speed_event = pygame.USEREVENT + 1
             pygame.time.set_timer(speed_event, speed)
 
@@ -483,23 +478,19 @@ class Graph:
             root.update_f_cost()
             counter = 0
             fringe = PriorityQueue()
-            fringe.put((root.f_cost, counter, root))  # the counter is used to differentiate between elements with the same weight
+            fringe.add(root, root.f_cost)  # the counter is used to differentiate between elements with the same weight
             visited = []
 
             while not fringe.empty():
                 for event in pygame.event.get():
                     if event.type == speed_event:
-                        
-                        item_out = fringe.get()
-                        current = item_out[2]
+                        fringe.display_queue()
+
+                        current = fringe.pop()
                         visited.append(current)
 
-                        # print("> Current ", current)
-                        # print("> Goals ")
-                        # list(map(lambda x: print(x), goal_states))
                         if (current.parent is not None):
-                            current.getEdgeFromParent().color = (143, 115, 104)
-
+                            current.getEdgeFromParent().color = (117, 116, 115)
 
                         if current in goal_states:
                             current.color = Node.goal_state_color
@@ -516,7 +507,7 @@ class Graph:
                                     adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight
                                     adj[0].update_f_cost()
                                     counter += 1                                                            
-                                    fringe.put((adj[0].f_cost, counter, adj[0]))
+                                    fringe.add(adj[0], adj[0].f_cost)
                                     visited.append(adj[0])
 
                             elif betterSol:
@@ -526,7 +517,8 @@ class Graph:
                                 # betterSol = True
 
                                 counter += 1                                                            
-                                fringe.put((adj[0].f_cost, counter, adj[0]))
+                                fringe.add(adj[0], adj[0].f_cost)
+
 
                         current.color = Node.current_node_color
 
@@ -536,6 +528,7 @@ class Graph:
                         pygame.display.update()
 
                         current.color = Node.visited_color
+
 
     def reset_nodes(self):
         for node in self.nodes:
