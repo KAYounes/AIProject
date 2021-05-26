@@ -47,18 +47,22 @@ class Panel:
 
         self.dfs_btn = Button()
         self.dfs_btn.btn_text = "DFS Algorithm"
-        self.dfs_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 3)
+        self.dfs_btn.cords = (self.button_offset_x*1.3 + self.bfs_btn.bg_rect.width, self.algo_Title_y + self.button_offset_y * 2)
         self.dfs_btn.render()
 
         self.ucs_btn = Button()
         self.ucs_btn.btn_text = "UCS Algorithm"
-        self.ucs_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 4)
+        self.ucs_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 3)
         self.ucs_btn.render()
 
+        self.ID_btn = Button()
+        self.ID_btn.btn_text = "ITD Algorithm"
+        self.ID_btn.cords = (self.button_offset_x*1.3 + self.ucs_btn.bg_rect.width, self.algo_Title_y + self.button_offset_y * 3)
+        self.ID_btn.render()
 
         self.infored_title = Button(25)
         self.infored_title.btn_text = "• Informed"
-        self.infored_title.cords = (30, self.algo_Title_y + self.button_offset_y * 5)
+        self.infored_title.cords = (30, self.algo_Title_y + self.button_offset_y * 4)
         self.infored_title.trans = True
         self.infored_title.txt_color = (0,0,0)
         self.infored_title.bold = True
@@ -66,16 +70,16 @@ class Panel:
 
         self.greedy_btn = Button()
         self.greedy_btn.btn_text = "GREEDY Algorithm"
-        self.greedy_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 6)
+        self.greedy_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 5)
         self.greedy_btn.render()
 
         self.aStar_btn = Button()
         self.aStar_btn.btn_text = "A* Algorithm"
-        self.aStar_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 7)
+        self.aStar_btn.cords = (self.button_offset_x * 1.3 + self.greedy_btn.bg_rect.width, self.algo_Title_y + self.button_offset_y * 5)
         self.aStar_btn.render()
 
 
-        self.control_Title_y = self.algo_Title_y + self.button_offset_y * 8
+        self.control_Title_y = self.algo_Title_y + self.button_offset_y * 6
         self.control_Title = Button(30)
         self.control_Title.btn_text = "Control"
         self.control_Title.cords = (0, self.control_Title_y)
@@ -95,7 +99,7 @@ class Panel:
 
         self.speed_btn = Button()
         self.speed_btn.btn_text = "Search Speed: " + str(2 - (self.speed) / 1000) + "X"
-        self.speed_btn.cords = (self.button_offset_x, self.control_Title_y + self.button_offset_y * 2)
+        self.speed_btn.cords = (self.button_offset_x * 1.6 + self.play_btn.bg_rect.width + self.stop_btn.bg_rect.width, self.control_Title_y + self.button_offset_y)
         self.speed_btn.render()
 
         self.graph_title_y = self.control_Title_y + self.button_offset_y * 3
@@ -143,6 +147,7 @@ class Panel:
         self.bfs_btn.draw(self.panel_surf)
         self.dfs_btn.draw(self.panel_surf)
         self.ucs_btn.draw(self.panel_surf)
+        self.ID_btn.draw(self.panel_surf)
         self.infored_title.draw(self.panel_surf)
         self.greedy_btn.draw(self.panel_surf)
         self.aStar_btn.draw(self.panel_surf)
@@ -163,6 +168,7 @@ class Panel:
         self.bfs_btn.detect_hover(relMouse)
         self.dfs_btn.detect_hover(relMouse)
         self.ucs_btn.detect_hover(relMouse)
+        self.ID_btn.detect_hover(relMouse)
         self.greedy_btn.detect_hover(relMouse)
         self.aStar_btn.detect_hover(relMouse)
         self.play_btn.detect_hover(relMouse)

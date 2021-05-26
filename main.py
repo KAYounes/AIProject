@@ -12,7 +12,7 @@ init()
 pygame.mixer.pre_init(44100, -16, 2, 512) #! handles a lot of things. Used here to remove delay before sound plays
 clock = pygame.time.Clock()
 
-hor, ver, panelHor = 1600, 1000, 275
+hor, ver, panelHor = 1500, 1000, 375
 grid_size = 25
 pygame.display.set_caption("Graph Search Visualizer")
 pygame.display.set_icon(pygame.image.load("icon.png"))

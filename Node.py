@@ -84,5 +84,18 @@ class Node:
 
     def update_f_cost(self):
         self.f_cost = self.total_cost + self.heuristic
+
+    def get_hight(self):
+        if (self.parent is None):
+            return 0
+
+        # print(self, self.parent)
+        return self.parent.get_hight() + 1
+
+
+
+        
+        
+        
     
     

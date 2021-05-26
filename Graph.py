@@ -209,6 +209,9 @@ class Graph:
                                 elif (algorithm == "DFS"):
                                     cost = self.DFS(start_state, goal_states, speed)
 
+                                elif (algorithm == "ITD"):
+                                    cost = self.ITD(start_state, goal_states, speed)
+
                                 elif (algorithm == "GRY"):
                                     cost = self.GRDY(start_state, goal_states, speed)
 
@@ -217,8 +220,8 @@ class Graph:
 
                                 message = f"Total Cost to goal {cost}. nl Algorithm has finished execution. nl Press `Play` to run the algorithm again or nl Press stop search to return back to drawing."
 
-                        elif (panel.speed_btn.detect_click()):
-                            speed = panel.speed_control()
+                        # elif (panel.speed_btn.detect_click()):
+                        #     speed = panel.speed_control()
 
                         elif(panel.stop_btn.detect_click()):
                             panel.play_btn.toggled = False
@@ -529,6 +532,65 @@ class Graph:
 
                         current.color = Node.visited_color
 
+
+    def ITD(self, start_state, goal_states, speed = 750):
+        print("Iterative Deeping Search RUN") 
+
+        speed_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(speed_event, speed)
+
+        cycle = 4
+        max_depth = 1
+        while(cycle > 0):
+            root = start_state
+            fringe = []
+            fringe.append(root)
+            visited = []
+
+            current_depth = 0
+            self.reset_nodes()
+
+            while (len(fringe) > 0):
+
+                for event in pygame.event.get():
+
+                    if event.type == speed_event:
+                        print("Fringe:", fringe)
+
+                        current = fringe.pop()
+
+                        if (current.parent is not None):
+                            current.getEdgeFromParent().color = (117, 116, 115)
+
+                        visited.append(current)
+
+                        current.color = Node.current_node_color
+
+                        if current in goal_states:
+                            current.color = Node.goal_state_color
+                            return self.path_to_goal(current)
+                        current_depth = current.get_hight() + 1
+                        # print(current, current_depth)
+
+                        if (current_depth < max_depth):
+
+                            for adj in current.adjacent:
+                                if adj[0] not in visited:
+                                    adj[0].color = Node.in_fringe_color
+
+                                    if (adj[0] not in fringe):
+                                        adj[0].parent = current
+                                    fringe.append(adj[0])
+
+                            current.color = Node.visited_color
+
+                        self.draw_edges()
+                        self.draw_nodes((0, 0))
+                        self.screen.blit(self.surface, (0, 0))
+                        pygame.display.update()
+            
+            cycle -= 1
+            max_depth += 1
 
     def reset_nodes(self):
         for node in self.nodes:
