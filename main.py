@@ -90,6 +90,11 @@ while(loop):
                         panel.dfs_btn.detect_toggle()
                         g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "DFS", speed) 
                         panel.dfs_btn.toggled = False
+                    
+                    elif(panel.ID_btn.detect_click()):
+                        panel.ID_btn.detect_toggle()
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "ITD", speed) 
+                        panel.ID_btn.toggled = False
 
                     elif(panel.greedy_btn.detect_click()):
                         panel.greedy_btn.detect_toggle()
