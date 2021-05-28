@@ -12,7 +12,7 @@ init()
 pygame.mixer.pre_init(44100, -16, 2, 512) #! handles a lot of things. Used here to remove delay before sound plays
 clock = pygame.time.Clock()
 
-hor, ver, panelHor = 1500, 1000, 375
+hor, ver, panelHor = 1200,1140, 375
 grid_size = 25
 pygame.display.set_caption("Graph Search Visualizer")
 pygame.display.set_icon(pygame.image.load("icon.png"))
@@ -93,8 +93,15 @@ while(loop):
                     
                     elif(panel.ID_btn.detect_click()):
                         panel.ID_btn.detect_toggle()
-                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "ITD", speed) 
+                        max_depth = (g.input_depth_limit(mouse))
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "ITD", speed, max_depth) 
                         panel.ID_btn.toggled = False
+
+                    elif(panel.DLS_btn.detect_click()):
+                        panel.DLS_btn.detect_toggle()
+                        max_depth = (g.input_depth_limit(mouse))
+                        g.runAlgorithm(panel, draw_grid(hor,ver, grid_size), "DLS", speed, max_depth) 
+                        panel.DLS_btn.toggled = False
 
                     elif(panel.greedy_btn.detect_click()):
                         panel.greedy_btn.detect_toggle()
@@ -126,6 +133,10 @@ while(loop):
     
     g.draw_edges()
     g.draw_nodes(mouse)
+    # g.input_depth_limit(mouse)
+    # box = pygame.Rect(500, 300, 50, 50)#prompt_rect.width + 20, prompt_rect.height + 30)
+    # pygame.draw.rect(canvas, (0,0,0), box)
+
     panel.draw_btns()
     panel.btnDetect_hover(mouse)
 

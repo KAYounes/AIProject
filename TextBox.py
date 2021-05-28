@@ -3,13 +3,16 @@ from pygame import Vector2
 
 clock = pygame.time.Clock()
 class TextBox:
-    def __init__(self, x, y, width = 42, hight = 28, color = (255, 255, 255), allowZero = False):
+    def __init__(self, x, y, width = 42, hight = 28, color = (255, 255, 255), active = ((162, 237, 50)), allowZero = False, border = True):
         self.center = Vector2(x, y)
         self.text = '1'
         self.width = width
         self.hight = hight
+        self.main_color = color
+        self.active_color = color
         self.color = color
         self.allowZero = allowZero
+        self.border = border
 
         self.rect = pygame.Rect(self.center.x, self.center.y, self.width, self.hight)
         self.rect.center = self.center
@@ -19,20 +22,20 @@ class TextBox:
     def takeInput(self, surface, screen, font):
         #> BUG
             #solved #$ if textbox is empty (no text) and then deactivated, program crashes since int("") is not valid
-        self.color = (162, 237, 50)
+        self.color = self.active_color
         loop = True
         while(loop):
             
             for event in pygame.event.get():
 
                 if (event.type == pygame.QUIT):
-                    self.color = (255, 255, 255)
+                    self.color = self.main_color
                     loop = False
                     return int(self.text)
 
                 if(event.type == pygame.MOUSEBUTTONDOWN and self.text != ""):
                     if not(self.rect.collidepoint(pygame.mouse.get_pos())):
-                        self.color = (255, 255, 255)
+                        self.color = self.main_color
                         # print(int(self.text) + 1, self.text)
                         loop = False
                         return int(self.text)
@@ -40,7 +43,7 @@ class TextBox:
                 if (event.type == pygame.KEYDOWN):
 
                     if(event.key == pygame.K_RETURN and self.text != ""):
-                        self.color = (255, 255, 255)
+                        self.color = self.main_color
                         # print(int(self.text) + 1, self.text)
                         loop = False
                         return int(self.text)
@@ -68,5 +71,6 @@ class TextBox:
         font_rect.center = self.rect.center
 
         pygame.draw.rect(surface, self.color, self.rect) #206, 219, 221
-        pygame.draw.rect(surface, (0,0,0), self.rect, 3)
+        if(self.border):
+            pygame.draw.rect(surface, (0,0,0), self.rect, 3)
         surface.blit(font_surface, font_rect)

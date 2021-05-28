@@ -1,8 +1,12 @@
 import pygame, sys
+
+from pygame.draw import line
 from Node import Node
 from Edge import Edge
-# from queue import PriorityQueue
 from fringe import PriorityQueue
+from TextBox import TextBox
+
+
 class Graph:
     def __init__(self, surface, screen, radius, directed = False):
         self.surface = surface
@@ -162,7 +166,33 @@ class Graph:
                 return node
 
 
-    def runAlgorithm(self, panel, grid_surf, algorithm, speed):
+    def input_depth_limit(self, point):
+        prompt = "Please type the maximum depth."
+        prompt_surf = self.font.render(prompt, True, (0,0,0))
+        prompt_rect = prompt_surf.get_rect()
+        prompt_rect.center = self.surface.get_width() // 2, self.surface.get_height() // 2 - 20
+
+        box = pygame.Rect(0, 0, prompt_rect.width + 30, prompt_rect.height + 50)
+        box.center = (self.surface.get_width() // 2, self.surface.get_height() // 2)
+
+        tb = TextBox(box.centerx, box.centery + 12, hight=16, border= False, active=(255,255,255), allowZero= True)
+
+        pygame.draw.rect(self.surface, (255,255,255), box)
+        pygame.draw.rect(self.surface, (0,0,0), box, width = 3)
+
+        self.surface.blit(prompt_surf, prompt_rect)
+
+        tb.render(self.surface, self.font)
+        
+
+        pygame.draw.line(self.surface, (0,0,0), (box.left + 50, box.bottom - 15), (box.right - 50, box.bottom - 15), 3)
+        
+        return (tb.takeInput(self.surface, self.screen, self.font))
+            
+
+        
+
+    def runAlgorithm(self, panel, grid_surf, algorithm, speed, max_depth = -1):
         loop = True
         start_state = None
         goal_states = []
@@ -189,6 +219,7 @@ class Graph:
                         
                         elif (panel.speed_btn.detect_click()):
                             speed = panel.speed_control()
+                            print(">>", speed)
 
                         elif (panel.showC_btn.detect_click()):
                             self.showCost = panel.showC_btn.detect_toggle()
@@ -197,7 +228,8 @@ class Graph:
                             if (start_state is not None and len(goal_states) > 0):
                                 panel.play_btn.detect_toggle()
                                 self.reset_nodes()
-                                self.updateScreen(panel)
+                                
+                                # self.updateScreen(panel)
 
                                 if (algorithm == "BFS"):
                                     cost = self.BFS(start_state, goal_states, speed)
@@ -210,7 +242,10 @@ class Graph:
                                     cost = self.DFS(start_state, goal_states, speed)
 
                                 elif (algorithm == "ITD"):
-                                    cost = self.ITD(start_state, goal_states, speed)
+                                    cost = self.ITD(start_state, goal_states, speed, max_depth)
+
+                                elif (algorithm == "DLS"):
+                                    cost = self.DLS(start_state, goal_states, speed, max_depth)
 
                                 elif (algorithm == "GRY"):
                                     cost = self.GRDY(start_state, goal_states, speed)
@@ -218,7 +253,12 @@ class Graph:
                                 elif (algorithm == "AST"):
                                     cost = self.ASRT(start_state, goal_states, speed)
 
-                                message = f"Total Cost to goal {cost}. nl Algorithm has finished execution. nl Press `Play` to run the algorithm again or nl Press stop search to return back to drawing."
+                                message2 = f"Start state {start_state} nl Goal stats {list(map(lambda x: x.state, goal_states))}"
+                                
+                                if(max_depth != -1):
+                                    message2 += f" nl Max Depth {max_depth}"
+
+                                message = message2 + f" nl Total Cost to goal {cost}. nl Algorithm has finished execution. nl Press `Play` to run the algorithm again or nl Press stop search to return back to drawing."
 
                         # elif (panel.speed_btn.detect_click()):
                         #     speed = panel.speed_control()
@@ -261,7 +301,8 @@ class Graph:
 
     def updateScreen(self, panel):
         self.screen.blit(self.surface, (0,0))
-        self.screen.blit(panel.panel_surf, (panel.cordX, panel.cordY))
+        if (panel != 0):
+            self.screen.blit(panel.panel_surf, (panel.cordX, panel.cordY))
         pygame.display.update()
 
 
@@ -311,8 +352,9 @@ class Graph:
 
 
     def DFS(self, start_state, goal_states, speed = 750):
+        print("SPEED", speed)
         print("DFS Search RUN") 
-
+        pygame.event.clear()
         speed_event = pygame.USEREVENT + 1
         pygame.time.set_timer(speed_event, speed)
 
@@ -329,6 +371,10 @@ class Graph:
 
                 if event.type == speed_event:
                     current = fringe.pop()
+
+                    state_fringe = list(map(lambda x: x.state, fringe))
+
+                    print(state_fringe) 
 
                     if (current.parent is not None):
                         current.getEdgeFromParent().color = (117, 116, 115)
@@ -533,15 +579,15 @@ class Graph:
                         current.color = Node.visited_color
 
 
-    def ITD(self, start_state, goal_states, speed = 750):
+    def ITD(self, start_state, goal_states, speed = 750, cycles = 1):
         print("Iterative Deeping Search RUN") 
 
         speed_event = pygame.USEREVENT + 1
         pygame.time.set_timer(speed_event, speed)
 
-        cycle = 4
         max_depth = 1
-        while(cycle > 0):
+        cycles += 1
+        while(cycles > 0):
             root = start_state
             fringe = []
             fringe.append(root)
@@ -555,7 +601,9 @@ class Graph:
                 for event in pygame.event.get():
 
                     if event.type == speed_event:
-                        print("Fringe:", fringe)
+                        state_fringe = list(map(lambda x: x.state, fringe))
+
+                        print(state_fringe)
 
                         current = fringe.pop()
 
@@ -582,15 +630,75 @@ class Graph:
                                         adj[0].parent = current
                                     fringe.append(adj[0])
 
-                            current.color = Node.visited_color
+                        current.color = Node.visited_color
 
                         self.draw_edges()
                         self.draw_nodes((0, 0))
                         self.screen.blit(self.surface, (0, 0))
                         pygame.display.update()
             
-            cycle -= 1
+            cycles -= 1
             max_depth += 1
+
+
+    def DLS(self, start_state, goal_states, speed = 750, cycles = 1):
+        print("Depth Limited Search RUN") 
+
+        speed_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(speed_event, speed)
+
+        cycles += 1
+        max_depth = cycles
+        print(max_depth)
+        root = start_state
+        fringe = []
+        fringe.append(root)
+        visited = []
+
+        current_depth = 0
+        self.reset_nodes()
+
+        while (len(fringe) > 0):
+
+            for event in pygame.event.get():
+
+                if event.type == speed_event:
+                    state_fringe = list(map(lambda x: x.state, fringe))
+
+                    print(state_fringe) 
+
+                    current = fringe.pop()
+
+                    if (current.parent is not None):
+                        current.getEdgeFromParent().color = (117, 116, 115)
+
+                    visited.append(current)
+
+                    current.color = Node.current_node_color
+
+                    if current in goal_states:
+                        current.color = Node.goal_state_color
+                        return self.path_to_goal(current)
+                    current_depth = current.get_hight() + 1
+                    # print(current, current_depth)
+
+                    if (current_depth < max_depth):
+
+                        for adj in current.adjacent:
+                            if adj[0] not in visited:
+                                adj[0].color = Node.in_fringe_color
+
+                                if (adj[0] not in fringe):
+                                    adj[0].parent = current
+                                fringe.append(adj[0])
+
+                        current.color = Node.visited_color
+
+                    self.draw_edges()
+                    self.draw_nodes((0, 0))
+                    self.screen.blit(self.surface, (0, 0))
+                    pygame.display.update()
+
 
     def reset_nodes(self):
         for node in self.nodes:

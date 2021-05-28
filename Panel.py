@@ -60,9 +60,14 @@ class Panel:
         self.ID_btn.cords = (self.button_offset_x*1.3 + self.ucs_btn.bg_rect.width, self.algo_Title_y + self.button_offset_y * 3)
         self.ID_btn.render()
 
+        self.DLS_btn = Button()
+        self.DLS_btn.btn_text = "DLS Algorithm"
+        self.DLS_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 4)
+        self.DLS_btn.render()
+
         self.infored_title = Button(25)
         self.infored_title.btn_text = "• Informed"
-        self.infored_title.cords = (30, self.algo_Title_y + self.button_offset_y * 4)
+        self.infored_title.cords = (30, self.algo_Title_y + self.button_offset_y * 5)
         self.infored_title.trans = True
         self.infored_title.txt_color = (0,0,0)
         self.infored_title.bold = True
@@ -70,16 +75,16 @@ class Panel:
 
         self.greedy_btn = Button()
         self.greedy_btn.btn_text = "GREEDY Algorithm"
-        self.greedy_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 5)
+        self.greedy_btn.cords = (self.button_offset_x, self.algo_Title_y + self.button_offset_y * 6)
         self.greedy_btn.render()
 
         self.aStar_btn = Button()
         self.aStar_btn.btn_text = "A* Algorithm"
-        self.aStar_btn.cords = (self.button_offset_x * 1.3 + self.greedy_btn.bg_rect.width, self.algo_Title_y + self.button_offset_y * 5)
+        self.aStar_btn.cords = (self.button_offset_x * 1.3 + self.greedy_btn.bg_rect.width, self.algo_Title_y + self.button_offset_y * 6)
         self.aStar_btn.render()
 
 
-        self.control_Title_y = self.algo_Title_y + self.button_offset_y * 6
+        self.control_Title_y = self.algo_Title_y + self.button_offset_y * 7
         self.control_Title = Button(30)
         self.control_Title.btn_text = "Control"
         self.control_Title.cords = (0, self.control_Title_y)
@@ -102,7 +107,7 @@ class Panel:
         self.speed_btn.cords = (self.button_offset_x * 1.6 + self.play_btn.bg_rect.width + self.stop_btn.bg_rect.width, self.control_Title_y + self.button_offset_y)
         self.speed_btn.render()
 
-        self.graph_title_y = self.control_Title_y + self.button_offset_y * 3
+        self.graph_title_y = self.control_Title_y + self.button_offset_y * 2
         self.graph_title = Button(30)
         self.graph_title.btn_text = "Graph"
         self.graph_title.cords = (0, self.graph_title_y)
@@ -148,6 +153,7 @@ class Panel:
         self.dfs_btn.draw(self.panel_surf)
         self.ucs_btn.draw(self.panel_surf)
         self.ID_btn.draw(self.panel_surf)
+        self.DLS_btn.draw(self.panel_surf)
         self.infored_title.draw(self.panel_surf)
         self.greedy_btn.draw(self.panel_surf)
         self.aStar_btn.draw(self.panel_surf)
@@ -169,6 +175,7 @@ class Panel:
         self.dfs_btn.detect_hover(relMouse)
         self.ucs_btn.detect_hover(relMouse)
         self.ID_btn.detect_hover(relMouse)
+        self.DLS_btn.detect_hover(relMouse)
         self.greedy_btn.detect_hover(relMouse)
         self.aStar_btn.detect_hover(relMouse)
         self.play_btn.detect_hover(relMouse)
