@@ -23,6 +23,7 @@ class Graph:
         self.showHeuristic = False
         self.showCost = False
 
+
     def addNode(self, point):
 
         for node in self.nodes:
@@ -217,7 +218,6 @@ class Graph:
                         
                         elif (panel.speed_btn.detect_click()):
                             speed = panel.speed_control()
-                            print(">>", speed)
 
                         elif (panel.showC_btn.detect_click()):
                             self.showCost = panel.showC_btn.detect_toggle()
@@ -233,7 +233,6 @@ class Graph:
                                     cost = self.BFS(start_state, goal_states, speed)
 
                                 elif (algorithm == "UCS"):
-                                    # print("Run UCS")
                                     cost = self.UCS(start_state, goal_states, speed)
 
                                 elif (algorithm == "DFS"):
@@ -305,7 +304,7 @@ class Graph:
 
 
     def BFS(self, start_state, goal_states, speed = 750):
-        print("BFS Search RUN", speed)
+        print("BFS Search RUN")
 
         speed_event = pygame.USEREVENT + 1
         pygame.time.set_timer(speed_event, speed)
@@ -332,6 +331,8 @@ class Graph:
                     current.color = Node.current_node_color
                     if current in goal:
                         current.color = Node.goal_state_color
+                        pygame.event.clear()
+                        pygame.time.set_timer(speed_event, 0)
                         return self.path_to_goal(current)
                         
                     for adj in current.adjacent:
@@ -347,11 +348,14 @@ class Graph:
                     pygame.display.update()
 
                     current.color = Node.visited_color
+        
+        pygame.event.clear()
+        pygame.time.set_timer(speed_event, 0)
+        return False
 
 
     def DFS(self, start_state, goal_states, speed = 750):
-        print("SPEED", speed)
-        print("DFS Search RUN") 
+        print("DFS Search RUN")
         pygame.event.clear()
         speed_event = pygame.USEREVENT + 1
         pygame.time.set_timer(speed_event, speed)
@@ -361,12 +365,10 @@ class Graph:
         fringe.append(root)
         visited = []
 
-        current_depth = 0
-
         while (len(fringe) > 0):
 
+            # print(pygame.event.get() )
             for event in pygame.event.get():
-
                 if event.type == speed_event:
                     current = fringe.pop()
 
@@ -380,11 +382,11 @@ class Graph:
                     visited.append(current)
 
                     current.color = Node.current_node_color
-                    # print(current)
 
                     if current in goal_states:
                         current.color = Node.goal_state_color
-                        running = False
+                        pygame.event.clear()
+                        pygame.time.set_timer(speed_event, 0)
                         return self.path_to_goal(current)
 
                     for adj in current.adjacent:
@@ -395,18 +397,15 @@ class Graph:
                                 adj[0].parent = current
                             fringe.append(adj[0])
 
-                        # else:
-                            # adj[0].color = Node.visited_color
-
                     self.draw_edges()
                     self.draw_nodes((0, 0))
                     self.screen.blit(self.surface, (0, 0))
                     pygame.display.update()
 
                     current.color = Node.visited_color
-                    current_depth += 1
 
-
+        pygame.event.clear()
+        pygame.time.set_timer(speed_event, 0)
         return False
 
 
@@ -434,6 +433,8 @@ class Graph:
 
                         if current in goal_states:
                             current.color = Node.goal_state_color
+                            pygame.event.clear()
+                            pygame.time.set_timer(speed_event, 0)
                             return self.path_to_goal(current)
 
                         for adj in current.adjacent:
@@ -465,6 +466,10 @@ class Graph:
 
                         current.color = Node.visited_color
 
+            pygame.event.clear()
+            pygame.time.set_timer(speed_event, 0)
+            return False
+
 
     def GRDY(self, start_state, goal_states, speed = 750):
             print("Greedy Search RUN")
@@ -492,6 +497,8 @@ class Graph:
 
                         if current in goal_states:
                             current.color = Node.goal_state_color
+                            pygame.event.clear()
+                            pygame.time.set_timer(speed_event, 0)
                             return self.path_to_goal(current)
 
                         for adj in current.adjacent:
@@ -512,6 +519,10 @@ class Graph:
                         pygame.display.update()
 
                         current.color = Node.visited_color
+    
+            pygame.event.clear()
+            pygame.time.set_timer(speed_event, 0)
+            return False
 
 
     def ASRT(self, start_state, goal_states, speed = 750):
@@ -539,6 +550,8 @@ class Graph:
 
                         if current in goal_states:
                             current.color = Node.goal_state_color
+                            pygame.event.clear()
+                            pygame.time.set_timer(speed_event, 0)
                             return self.path_to_goal(current)
 
                         for adj in current.adjacent:
@@ -571,6 +584,10 @@ class Graph:
                         pygame.display.update()
 
                         current.color = Node.visited_color
+            
+            pygame.event.clear()
+            pygame.time.set_timer(speed_event, 0)
+            return False
 
 
     def ITD(self, start_state, goal_states, speed = 750, cycles = 1):
@@ -610,9 +627,11 @@ class Graph:
 
                         if current in goal_states:
                             current.color = Node.goal_state_color
+                            pygame.event.clear()
+                            pygame.time.set_timer(speed_event, 0)
                             return self.path_to_goal(current)
+
                         current_depth = current.get_hight() + 1
-                        # print(current, current_depth)
 
                         if (current_depth < max_depth):
 
@@ -634,6 +653,10 @@ class Graph:
             
             cycles -= 1
             max_depth += 1
+        
+        pygame.event.clear()
+        pygame.time.set_timer(speed_event, 0)
+        return False
 
 
     def DLS(self, start_state, goal_states, speed = 750, cycles = 1):
@@ -673,7 +696,10 @@ class Graph:
 
                     if current in goal_states:
                         current.color = Node.goal_state_color
+                        pygame.event.clear()
+                        pygame.time.set_timer(speed_event, 0)
                         return self.path_to_goal(current)
+
                     current_depth = current.get_hight() + 1
                     # print(current, current_depth)
 
@@ -694,6 +720,10 @@ class Graph:
                     pygame.display.update()
 
                     current.color = Node.visited_color
+
+        pygame.event.clear()
+        pygame.time.set_timer(speed_event, 0)
+        return False
 
 
     def reset_nodes(self):

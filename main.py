@@ -16,8 +16,9 @@ w = int(input("Please enter the horizontal resolution of your screen: "))
 h = int(input("Please enter the vertical resolution of your screen: "))
 print(f"The program should have started with a window size of {w} x {h}")
 print("If the program window is not fully visible then please enter a larger resolution, else change the resolution of your screen")
-
-hor, ver, panelHor = w,h, 375
+w = w - 400
+h = h - 60
+hor, ver, panelHor = w, h, 375
 grid_size = 25
 pygame.display.set_caption("Graph Search Visualizer")
 pygame.display.set_icon(pygame.image.load("icon.png"))
@@ -25,7 +26,6 @@ canvas = pygame.Surface((hor, ver))
 # panelSurf = pygame.Surface((panelHor - grid_size, ver - grid_size*2))
 panel = Panel(hor + grid_size // 2, grid_size // 2, panelHor - grid_size, ver - grid_size , (164, 250, 107))
 screen = pygame.display.set_mode((hor + panelHor, ver))
-
 #> Colors
 panelColor = (164, 250, 107) #(136, 248, 71)
 

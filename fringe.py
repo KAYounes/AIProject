@@ -118,13 +118,3 @@ class PriorityQueue(object):
 
         print(temp)
 
-
-# pq = PriorityQueue()
-# pq.add(1, 5)
-# print(not pq.empty())
-# pq.add(1, 5)
-# pq.add(2, 5)
-# pq.add(3, 5)
-# print(pq.nodes)
-# pq.replace((1,2))
-# print(pq.nodes)
