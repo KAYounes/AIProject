@@ -51,7 +51,8 @@ def draw_grid(width, length, size):
 #>
 loop = True
 speed = 250
-show = True
+click = pygame.mixer.Sound("mouse_click.wav")
+click.set_volume(0.2)
 
 while(loop):
     mouse = pygame.mouse.get_pos()
@@ -74,6 +75,7 @@ while(loop):
 
         elif (panel.mouseOnPanel(mouse)):
             if(event.type == pygame.MOUSEBUTTONDOWN):
+                click.play()
                 if(event.button == 1):
                     if(g.isEmpty() and panel.directed_btn.detect_click()):
                         g.directed = panel.directed_btn.detect_toggle()

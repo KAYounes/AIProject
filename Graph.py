@@ -22,6 +22,10 @@ class Graph:
         self.adding = False
         self.showHeuristic = False
         self.showCost = False
+        self.node_sound = pygame.mixer.Sound("sound.wav")
+        self.node_sound.set_volume(0.2)
+        self.edge_sound= pygame.mixer.Sound("mouse_click.wav")
+        self.edge_sound.set_volume(0.2)
 
 
     def addNode(self, point):
@@ -31,6 +35,7 @@ class Graph:
                 return False           
 
         self.nodes.append(Node(point, radius= self.radius))
+        self.node_sound.play()
         self.adding = True
         return True
 
@@ -59,6 +64,7 @@ class Graph:
                         node.color = Node.default_color
                     else:
                         self.edge.append(node)
+                    self.edge_sound.play()
 
                     if len(self.edge) == 2:
                         if (Edge(self.edge[0], self.edge[1]) not in self.edges):
@@ -210,7 +216,7 @@ class Graph:
                     pygame.quit()
                     sys.exit()
                 if(event.type == pygame.MOUSEBUTTONDOWN):
-
+                    self.edge_sound.play()
                     if(panel.mouseOnPanel(mouse)):
 
                         if (panel.showH_btn.detect_click()):
@@ -370,11 +376,11 @@ class Graph:
             # print(pygame.event.get() )
             for event in pygame.event.get():
                 if event.type == speed_event:
+                    state_fringe = list(map(lambda x: x.state, fringe))
+                    print(state_fringe) 
+
                     current = fringe.pop()
 
-                    state_fringe = list(map(lambda x: x.state, fringe))
-
-                    print(state_fringe) 
 
                     if (current.parent is not None):
                         current.getEdgeFromParent().color = (117, 116, 115)
