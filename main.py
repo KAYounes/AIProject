@@ -75,7 +75,7 @@ while(loop):
         elif (panel.mouseOnPanel(mouse)):
             if(event.type == pygame.MOUSEBUTTONDOWN):
                 if(event.button == 1):
-                    if(g.isEmpty()):
+                    if(g.isEmpty() and panel.directed_btn.detect_click()):
                         g.directed = panel.directed_btn.detect_toggle()
                     
                     if(panel.clear_btn.detect_click()):
