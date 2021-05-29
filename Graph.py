@@ -190,8 +190,6 @@ class Graph:
         return (tb.takeInput(self.surface, self.screen, self.font))
             
 
-        
-
     def runAlgorithm(self, panel, grid_surf, algorithm, speed, max_depth = -1):
         loop = True
         start_state = None
@@ -229,7 +227,7 @@ class Graph:
                                 panel.play_btn.detect_toggle()
                                 self.reset_nodes()
                                 
-                                # self.updateScreen(panel)
+                                self.updateScreen(panel)
 
                                 if (algorithm == "BFS"):
                                     cost = self.BFS(start_state, goal_states, speed)
@@ -258,7 +256,7 @@ class Graph:
                                 if(max_depth != -1):
                                     message2 += f" nl Max Depth {max_depth}"
 
-                                message = message2 + f" nl Total Cost to goal {cost}. nl Algorithm has finished execution. nl Press `Play` to run the algorithm again or nl Press stop search to return back to drawing."
+                                message ="Algorithm has finished execution nl" +  message2 + f" nl Total Cost to goal {cost}. nl Press `Play` to run the algorithm again or nl Press stop search to return back to drawing."
 
                         # elif (panel.speed_btn.detect_click()):
                         #     speed = panel.speed_control()
@@ -427,7 +425,9 @@ class Graph:
                 for event in pygame.event.get():
                     if event.type == speed_event:
                         # print(fringe.nodes)
+                        print()
                         fringe.display_queue()
+                        print(fringe.nodes)
                         
                         current = fringe.pop() 
                         visited.append(current)
@@ -445,8 +445,9 @@ class Graph:
 
                         for adj in current.adjacent:
                             betterSol = current.total_cost + adj[1].weight < adj[0].total_cost
-
-                            if adj[0] not in visited or fringe.inside(adj[0]):
+                            print(current.total_cost, adj[1].weight, adj[0].total_cost)
+                            print(adj[0].state, fringe.inside(adj[0]), betterSol)
+                            if (adj[0] not in visited) and not(fringe.inside(adj[0])):
 
                                 if (adj[0].parent is None):
                                     adj[0].parent = current
@@ -458,8 +459,11 @@ class Graph:
                             elif fringe.inside(adj[0]) and betterSol:
                                 adj[0].parent = current
                                 adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight
+                                print(adj[0].parent, adj[0].total_cost)
                                 fringe.replace((adj[0], adj[0].total_cost))                                                           
+                                fringe.display_queue()
                                 fringe.add(adj[0], adj[0].total_cost)
+                                fringe.display_queue()
                                 adj[0].color = Node.in_fringe_color
 
                         
@@ -549,7 +553,7 @@ class Graph:
                             betterSol = current.total_cost + adj[1].weight + adj[0].heuristic < adj[0].f_cost
                             adj[0].color = Node.in_fringe_color
 
-                            if adj[0] not in visited:
+                            if (adj[0] not in visited) and not(fringe.inside(adj[0])):
 
                                 if (adj[0].parent is None):
                                     adj[0].parent = current
@@ -559,11 +563,10 @@ class Graph:
                                     fringe.add(adj[0], adj[0].f_cost)
                                     visited.append(adj[0])
 
-                            elif betterSol:
+                            elif fringe.inside(adj[0]) and betterSol:
                                 adj[0].parent = current
                                 adj[0].total_cost = adj[0].parent.total_cost + adj[1].weight
                                 adj[0].update_f_cost()
-                                # betterSol = True
 
                                 counter += 1                                                            
                                 fringe.add(adj[0], adj[0].f_cost)
@@ -630,12 +633,13 @@ class Graph:
                                         adj[0].parent = current
                                     fringe.append(adj[0])
 
-                        current.color = Node.visited_color
 
                         self.draw_edges()
                         self.draw_nodes((0, 0))
                         self.screen.blit(self.surface, (0, 0))
                         pygame.display.update()
+
+                        current.color = Node.visited_color
             
             cycles -= 1
             max_depth += 1
@@ -692,12 +696,13 @@ class Graph:
                                     adj[0].parent = current
                                 fringe.append(adj[0])
 
-                        current.color = Node.visited_color
 
                     self.draw_edges()
                     self.draw_nodes((0, 0))
                     self.screen.blit(self.surface, (0, 0))
                     pygame.display.update()
+
+                    current.color = Node.visited_color
 
 
     def reset_nodes(self):

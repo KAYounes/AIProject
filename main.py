@@ -12,7 +12,12 @@ init()
 pygame.mixer.pre_init(44100, -16, 2, 512) #! handles a lot of things. Used here to remove delay before sound plays
 clock = pygame.time.Clock()
 
-hor, ver, panelHor = 1200,1140, 375
+w = int(input("Please enter the horizontal resolution of your screen: "))
+h = int(input("Please enter the vertical resolution of your screen: "))
+print(f"The program should have started with a window size of {w} x {h}")
+print("If the program window is not fully visible then please enter a larger resolution, else change the resolution of your screen")
+
+hor, ver, panelHor = w,h, 375
 grid_size = 25
 pygame.display.set_caption("Graph Search Visualizer")
 pygame.display.set_icon(pygame.image.load("icon.png"))

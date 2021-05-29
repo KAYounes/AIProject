@@ -9,7 +9,7 @@ class TextBox:
         self.width = width
         self.hight = hight
         self.main_color = color
-        self.active_color = color
+        self.active_color = active
         self.color = color
         self.allowZero = allowZero
         self.border = border
