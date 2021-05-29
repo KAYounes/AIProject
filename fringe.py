@@ -104,12 +104,17 @@ class PriorityQueue(object):
     def empty(self):
         return not (len(self.nodes) - 1)
 
-    def display_queue(self):
+    def display_queue(self, show_cost = True):
         temp = []
         for node in self.nodes:
             if (node is None):
                 continue
-            temp.append(node[0].state)
+            if(show_cost):
+                temp.append([node[0].state, node[1]])
+            else:
+                temp.append(node[0].state)
+                
+                
 
         print(temp)
 
