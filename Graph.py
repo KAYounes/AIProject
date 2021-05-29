@@ -23,9 +23,9 @@ class Graph:
         self.showHeuristic = False
         self.showCost = False
         self.node_sound = pygame.mixer.Sound("sound.wav")
-        self.node_sound.set_volume(0.2)
+        self.node_sound.set_volume(0.1)
         self.edge_sound= pygame.mixer.Sound("mouse_click.wav")
-        self.edge_sound.set_volume(0.2)
+        self.edge_sound.set_volume(0.1)
 
 
     def addNode(self, point):
