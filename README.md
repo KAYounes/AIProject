@@ -4,3 +4,5 @@
 3. Select the search algorithm (Uninfored and Informed)
 4. Press start
 5. Repeat
+
+![alt text](https://github.com/KAYounes/AIProject/blob/master/Example_Image.png?raw=true)
